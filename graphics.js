@@ -46,9 +46,9 @@ graphics.CardObj = function() {
     }
 
     this.animateDraw = function() {
-        this.sprite.x = 45 + (this.position * (25 + this.sprite.width))
+        this.sprite.x = 51 + (this.position * (31 + this.sprite.width))
 
-        this.sprite.y = 720 - 55 - this.sprite.height;
+        this.sprite.y = 720 - 20 - this.sprite.height;
         this.interactable = true;
         this.cardState = 'hand'
         console.log(this.sprite.x, this.sprite.y)
@@ -85,6 +85,8 @@ graphics.SubmitObj = function() {
         this.sprite = new PIXI.Sprite(PIXI.loader.resources["pics/tempsubmit.png"].texture)
         this.sprite.x = 500
         this.sprite.y = 350;
+        this.sprite.width = 165;
+        this.sprite.height = 60;
         app.stage.addChild(this.sprite)
     }
 }

@@ -14,6 +14,7 @@ app.stage.on('mouseup', app.mouse_up)
 PIXI.loader
 .add("pics/tempcard.png")
 .add("pics/tempdeckcard.png")
+.add("pics/tempsubmit.png")
 .load(function () {
     app.setup();
 });
@@ -28,6 +29,9 @@ app.setup = function () {
     saveDeck.init(0)
     let hand = new Hand()
     hand.init(deck, saveDeck)
+
+    let submitButton = new graphics.SubmitObj();
+    submitButton.init();
 
     hand.drawCards();
 
