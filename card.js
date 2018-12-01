@@ -4,9 +4,6 @@ Card = function() {
         this.consumed = false;
         this.cardType = type
     }
-    
-
-
 }
 
 Deck = function() {
@@ -96,7 +93,7 @@ Hand = function() {
         for (i = 0;i < 3; i++) {
             //console.log(this.cards[i].position)
         }
-        this.cards.filter(card => card != -1).forEach(card => card.runObject());
+        this.cards.filter(card => card != -1).forEach(card => card.runObject(mouseX,mouseY));
     }
 
 }

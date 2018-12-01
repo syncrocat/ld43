@@ -12,6 +12,8 @@ graphics.CardObj = function() {
         this.position = pos;
         console.log(pos)
         this.sprite = this.getSprite(card)
+        this.sprite.width = 175
+        this.sprite.height = 280
         this.sprite.x = 0;
         this.sprite.y = 0;
         this.card = card;
@@ -25,14 +27,15 @@ graphics.CardObj = function() {
     }
 
     this.isMousedOver = function(mouseX, mouseY) {
+        //console.log(mouseX, mouseY)
         return (
             this.sprite.x <= mouseX && this.sprite.x + this.sprite.width >= mouseX &&
-            this.sprite.y <= mouseX && this.sprite.y + this.sprite.height >= mouseY 
+            this.sprite.y <= mouseY && this.sprite.y + this.sprite.height >= mouseY 
         )
     }
 
     this.onHover = function() {
-        //something
+        console.log("Hey I'm " + this.position + " and you're watching the hover channel")
     }
 
     this.runObject = function(mouseX,mouseY) {
@@ -43,20 +46,9 @@ graphics.CardObj = function() {
     }
 
     this.animateDraw = function() {
-        console.log(this.position)
-        switch (this.position) {
-            case 0:
-                this.sprite.x = 100;
-                break;
-            case 1:
-                this.sprite.x = 250;
-                break;
-            case 2:
-                this.sprite.x = 400;
-                break;
-        }
+        this.sprite.x = 45 + (this.position * (25 + this.sprite.width))
 
-        this.sprite.y = 300;
+        this.sprite.y = 720 - 55 - this.sprite.height;
         this.interactable = true;
         this.cardState = 'hand'
         console.log(this.sprite.x, this.sprite.y)
@@ -83,6 +75,17 @@ graphics.CardObj = function() {
 
     this.animateUse = function() {
 
+    }
+}
+
+graphics.SubmitObj = function() {
+    this.sprite;
+
+    this.init = function() {
+        this.sprite = new PIXI.Sprite(PIXI.loader.resources["pics/tempsubmit.png"].texture)
+        this.sprite.x = 500
+        this.sprite.y = 350;
+        app.stage.addChild(this.sprite)
     }
 }
 

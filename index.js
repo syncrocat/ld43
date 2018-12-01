@@ -1,4 +1,4 @@
-app.renderer = PIXI.autoDetectRenderer(720, 720);
+app.renderer = PIXI.autoDetectRenderer(725, 720);
 app.renderer.backgroundColor = 0xff0000;
 
 // Add the canvas to the HTML document
