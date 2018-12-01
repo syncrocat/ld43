@@ -1,4 +1,4 @@
-app.renderer = PIXI.autoDetectRenderer(725, 825);
+app.renderer = PIXI.autoDetectRenderer(720, 720);
 app.renderer.backgroundColor = 0xff0000;
 
 // Add the canvas to the HTML document
@@ -12,45 +12,42 @@ app.stage.on('mousedown', app.mouse_down)
 app.stage.on('mouseup', app.mouse_up)
 
 PIXI.loader
-.add("assets/player.png")
+.add("pics/tempcard.png")
+.add("pics/tempdeckcard.png")
 .load(function () {
     app.setup();
 });
 
 app.setup = function () {
-    // Set up keyboard input
-    app.bindKeys();
-
-    // Set up player
-    app.test = new PIXI.Sprite(PIXI.loader.resources["assets/player.png"].texture);
-    app.test.x = 340;
-    app.stage.addChild(app.test);
     app.mouse_state = 'off';
     app.mouse_pressed = false;
 
-    app.c = 0;
-    app.player = new app.playerObj(100, 100);
-    app.player.setup();
+    let deck = new Deck()
+    deck.init(25)
+    let saveDeck = new Deck()
+    saveDeck.init(0)
+    let hand = new Hand()
+    hand.init(deck, saveDeck)
+
+    hand.drawCards();
 
     // Start the game loop
-    app.gameLoop();
+    app.gameLoop(hand);
 }
 
-app.gameLoop = function () {
-        // Get mouse data
-        var mouseposition = app.renderer.plugins.interaction.mouse.global;
-        app.last_mouse_x = app.mouse_x;
-        app.last_mouse_y = app.mouse_y;
-        app.mouse_x = Math.round(mouseposition.x)
-        app.mouse_y = Math.round(mouseposition.y)
+app.gameLoop = function (hand) {
+    // Comment
+    requestAnimationFrame(() => app.gameLoop(hand));
 
-        // Comment
-        requestAnimationFrame(app.gameLoop);
-        
-        // 
+    // Get mouse data
+    var mouseposition = app.renderer.plugins.interaction.mouse.global;
+    let mouseX = Math.round(mouseposition.x)
+    let mouseY = Math.round(mouseposition.y)
+    
+    // 
+    hand.runCards(mouseX,mouseY);
 
-
-        // Render my game palsy
-        app.renderer.render(app.stage);
-    }
+    // Render my game palsy
+    app.renderer.render(app.stage);
+}
     

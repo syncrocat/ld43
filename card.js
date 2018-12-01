@@ -14,7 +14,8 @@ Deck = function() {
     this.init = function(n) {
         this.cards = [];
         for (i = 0; i < n; i++) {
-            let card = new Card(i)
+            let card = new Card()
+            card.init(i)
             this.cards.push(card);
         }
     }
@@ -43,30 +44,41 @@ Deck = function() {
 }
 
 Hand = function() {
-    this.init = function() {
+    this.cards;
+    this.deck;
+    this.saveDeck;
+
+    this.init = function(deck, saveDeck) {
         this.cards = [-1, -1, -1]
+        this.deck = deck;
+        this.saveDeck = saveDeck;
     }
 
-    this.drawCards = function(deck) {
-        for (i = 0; i < 3; i++) {
-            let card = deck.drawCard();
-            this.cards[i] = card;
+    this.drawCards = function() {
+        for (let i = 0; i < 3; i++) {
+            let card = this.deck.drawCard();
+            this.cards[i] = new graphics.CardObj()
+            this.cards[i].init(card, i)
+            console.log(this.cards[0])
         }
+
     }
 
-    this.discardCard = function(n) {
-        this.cards[n].discardAction();
+    this.cardClicked = function(card, n) {
+        switch (gameState) {
+            case 'use':
+                card.useAction();
+                break;
+            case 'discard' :
+                card.discardAction();
+                break;
+        }
         this.cards[n] = -1;
     }
 
-    this.saveCard = function(n, saveDeck) {
+    this.saveCard = function(n) {
         //this.cards[n].saveAction();
-        saveDeck.addCard(this.cards[n]);
-        this.cards[n] = -1;
-    }
-
-    this.useCard = function(n) {
-        this.cards[n].useAction();
+        this.saveDeck.addCard(this.cards[n]);
         this.cards[n] = -1;
     }
 
@@ -78,6 +90,13 @@ Hand = function() {
             }
         }
         return availCards;
+    }
+
+    this.runCards = function(mouseX,mouseY) {
+        for (i = 0;i < 3; i++) {
+            //console.log(this.cards[i].position)
+        }
+        this.cards.filter(card => card != -1).forEach(card => card.runObject());
     }
 
 }
@@ -97,15 +116,19 @@ GameBoard = function () {
         switch (this.roundState) {
             case 0:
                 this.hand.useCard(n)
+                break;
             case 1:
                 this.hand.discardCard(n)
+                break;
             case 2:
                 let availCards = this.hand.getAvailableCards()
                 for (i = 0; i < availCards.size(); i++) {
                     this.hand.saveCard(availCards[i])
                 }
+                break;
             case 3:
-                this.hand.drawCards()           
+                this.hand.drawCards() 
+                break;          
         }
     }
 }
