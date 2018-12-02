@@ -4,6 +4,14 @@ Card = function() {
         this.consumed = false;
         this.cardType = type
     }
+
+    this.useAction = function() {
+        //do something        
+    }
+
+    this.discardAction = function() {
+        //do nothing
+    }
 }
 
 Deck = function() {
@@ -51,32 +59,33 @@ Hand = function() {
         this.saveDeck = saveDeck;
     }
 
+    this.submit = function() {
+        this.cards[0].card.useAction();
+        this.saveDeck.addCard(this.cards[1].card);
+        this.cards[2].card.discardAction();
+
+        // Save card
+        this.cards[0].cardState = 'use'
+        this.cards[0] = -1;
+        this.cards[1].cardState = 'save'
+        this.cards[1] = -1;
+        this.cards[2].cardState = 'discard'
+        this.cards[2] = -1;
+    }
+
+    this.swapCards = function(n, m) {
+        let temp = this.cards[n];
+        this.cards[n] = this.cards[m];
+        this.cards[m] = temp;
+    }   
+
     this.drawCards = function() {
         for (let i = 0; i < 3; i++) {
             let card = this.deck.drawCard();
             this.cards[i] = new graphics.CardObj()
             this.cards[i].init(card, i)
-            console.log(this.cards[0])
         }
 
-    }
-
-    this.cardClicked = function(card, n) {
-        switch (gameState) {
-            case 'use':
-                card.useAction();
-                break;
-            case 'discard' :
-                card.discardAction();
-                break;
-        }
-        this.cards[n] = -1;
-    }
-
-    this.saveCard = function(n) {
-        //this.cards[n].saveAction();
-        this.saveDeck.addCard(this.cards[n]);
-        this.cards[n] = -1;
     }
 
     this.getAvailableCards = function() {

@@ -7,9 +7,9 @@ document.body.appendChild(app.renderer.view);
 app.stage = new PIXI.Container();
 app.stage.interactive = true;
 app.stage.buttonMode = true;
-app.stage.hitArea = new PIXI.Rectangle(0, 0, 725, 825);
-app.stage.on('mousedown', app.mouse_down)
-app.stage.on('mouseup', app.mouse_up)
+app.stage.hitArea = new PIXI.Rectangle(0, 0, 725, 720);
+app.stage.on('mousedown', app.mouseDown)
+app.stage.on('mouseup', app.mouseUp)
 
 PIXI.loader
 .add("pics/tempcard.png")
@@ -20,7 +20,6 @@ PIXI.loader
 });
 
 app.setup = function () {
-    app.mouse_state = 'off';
     app.mouse_pressed = false;
 
     let deck = new Deck()
@@ -31,17 +30,23 @@ app.setup = function () {
     hand.init(deck, saveDeck)
 
     let submitButton = new graphics.SubmitObj();
-    submitButton.init();
+    submitButton.init(hand);
 
     hand.drawCards();
 
+    let gameBox = {
+        hand:hand,
+        submit:submitButton,
+    }
     // Start the game loop
-    app.gameLoop(hand);
+    app.gameLoop(gameBox);
 }
 
-app.gameLoop = function (hand) {
+app.gameLoop = function (gameBox) {
     // Comment
-    requestAnimationFrame(() => app.gameLoop(hand));
+    requestAnimationFrame(() => app.gameLoop(gameBox));
+
+    //console.log(app.mouse_pressed)
 
     // Get mouse data
     var mouseposition = app.renderer.plugins.interaction.mouse.global;
@@ -49,7 +54,9 @@ app.gameLoop = function (hand) {
     let mouseY = Math.round(mouseposition.y)
     
     // 
-    hand.runCards(mouseX,mouseY);
+    gameBox.hand.runCards(mouseX,mouseY);
+    gameBox.submit.runObject(mouseX,mouseY);
+
 
     // Render my game palsy
     app.renderer.render(app.stage);
