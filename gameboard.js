@@ -9,7 +9,7 @@ effects.munchDeer = function(gameBoard) {
     if (gameBoard.containsAnimal("deer")) {
         gameBoard.removeAnimal("deer");
         gameBoard.addEffectTimer(new EffectTimer(2, effects.munchDeer));
-        gameBoard.log("Wolf ate deer v nice +2 to hunger");
+        gameBoard.log("Wolf ate deer v nice +2 to big starve");
         return;
     }
 
@@ -18,7 +18,7 @@ effects.munchDeer = function(gameBoard) {
         gameBoard.splice(gameBoard.indexOfEffect("matureDeer"), 1);
         // halftime
         gameBoard.addEffectTimer(new EffectTimer(1, effects.munchDeer));
-        gameBoard.log("Wolf had baby deer yikes +1 hunger instead of 2");
+        gameBoard.log("Wolf had baby deer yikes +1 big starve instead of 2");
         return;
     }
 
