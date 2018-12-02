@@ -34,7 +34,7 @@ app.setup = function () {
     saveDeck.init(gameBoard, 0)
     let hand = new Hand();
     let submitButton = new graphics.SubmitObj();
-    hand.init(deck, saveDeck, submitButton)
+    hand.init(gameBoard, deck, saveDeck, submitButton)
     submitButton.init(hand);
     
     hand.drawCards();

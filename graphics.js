@@ -33,7 +33,7 @@ graphics.CardObj = function() {
 
     this.getRegTexture = function(card) {
         switch (card.cardType) {
-            case "Wolves":
+            case "Wolf":
                 return PIXI.loader.resources["pics/wolfcard.png"].texture;
             case "Deer":
                 return PIXI.loader.resources["pics/deercard.png"].texture;

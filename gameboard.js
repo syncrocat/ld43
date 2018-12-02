@@ -1,4 +1,4 @@
-EffectTimer = function(effect, duration, name, additionalParams=null) {
+EffectTimer = function(duration, effect, name, additionalParams=null) {
     this.effect = effect;
     this.remainingDuration = duration;
     this.name = name;
@@ -9,16 +9,15 @@ var effects = {};
 effects.munchDeer = function(gameBoard) {
     if (gameBoard.containsAnimal("deer")) {
         gameBoard.removeAnimal("deer");
-        gameBoard.addEffectTimer(new EffectTimer(2, effects.munchDeer));
+        gameBoard.addEffectTimer(new EffectTimer(2, effects.munchDeer, "munchDeer"));
         gameBoard.log("Wolf ate deer v nice +2 to big starve");
         return;
     }
 
     if (gameBoard.containsAnimal("youngDeer")) {
         gameBoard.removeAnimal("youngDeer");
-        gameBoard.splice(gameBoard.indexOfEffect("matureDeer"), 1);
         // halftime
-        gameBoard.addEffectTimer(new EffectTimer(1, effects.munchDeer));
+        gameBoard.addEffectTimer(new EffectTimer(1, effects.munchDeer, "munchDeer"));
         gameBoard.log("Wolf had baby deer yikes +1 big starve instead of 2");
         return;
     }
@@ -33,7 +32,7 @@ effects.matureDeer = function(gameBoard) {
     }
 
     gameBoard.removeSpecies("youngDeer");
-    gameBoard.addSpecies("deer");
+    gameBoard.addAnimal("deer");
     gameBoard.log("bambi is legal now");
 }
 
@@ -89,12 +88,12 @@ GameBoard = function () {
     this.log = function(message) {
         console.log(message)
         this.logQueue.unshift(message);
-        if (this.logQueue.size() > 5) {
+        if (this.logQueue.length > 5) {
             this.logQueue.pop();
         }
     }
 
-    this.addAnimal = function(animal) {
+    this.addAnimal = function(animalName) {
         if (!(animalName in this.animals)) {
             this.animals[animalName] = 0;
         }
@@ -102,7 +101,7 @@ GameBoard = function () {
         this.animals[animalName] += 1;
     }
 
-    this.removeAnimal = function(animal) {
+    this.removeAnimal = function(animalName) {
         if (!(animalName in this.animals)) {
             return false;
         }
@@ -116,8 +115,8 @@ GameBoard = function () {
     }
 
     this.indexOfEffect = function(effectName) {
-        for (let i = 0; i < this.effects.size(); i++) {
-            if (this.effects[i].name === effectName) {
+        for (let i = 0; i < this.effectTimers.length; i++) {
+            if (this.effectTimers[i].name === effectName) {
                 return i;
             }
         }
@@ -134,18 +133,26 @@ GameBoard = function () {
     }
 
     this.removeEffect = function(effectName) {
-        this.effects = this.effects.filter(effect => effect.name !== effectName);
+        this.effectTimers = this.effectTimers.filter(effectTimer => effectTimer.name !== effectName);
     }
 
-    this.countdown = function() {
-        for (let i = 0; i < this.effectTimers.size(); i++) {
+    this.countdown = function() {   
+        let effectTimersToExecute = []
+        // Figure out which effect timers to execute
+        for (let i = 0; i < this.effectTimers.length; i++) {
+            console.log(this.effectTimers[i].remainingDuration)
             this.effectTimers[i].remainingDuration -= 1;
             if (this.effectTimers[i].remainingDuration === 0) {
-                if (this.effectTimers[i].additionalParams == null) {
-                    this.effectTimers[i].effect(this);
-                } else {
-                    this.effectTimers[i].effect(this, this.effectTimeres[i].additionalParams)
-                }
+                console.log("Im supposed to be making an effect right now")
+                effectTimersToExecute.push(this.effectTimers[i])
+            }
+        }
+        // Execute em
+        for (let i = 0; i < effectTimersToExecute.length; i++) {
+            if (effectTimersToExecute[i].additionalParams == null) {
+                effectTimersToExecute[i].effect(this);
+            } else {
+                effectTimersToExecute[i].effect(this, this.effectTimersToExecute[i].additionalParams)
             }
         }
 
