@@ -52,11 +52,15 @@ Hand = function() {
     this.cards;
     this.deck;
     this.saveDeck;
+    this.drawTimer;
+    this.isWaitingToDraw;
+    this.submitButton;
 
-    this.init = function(deck, saveDeck) {
+    this.init = function(deck, saveDeck, submitButton) {
         this.cards = [-1, -1, -1]
         this.deck = deck;
         this.saveDeck = saveDeck;
+        this.submitButton = submitButton;
     }
 
     this.submit = function() {
@@ -66,11 +70,11 @@ Hand = function() {
 
         // Save card
         this.cards[0].cardState = 'use'
-        this.cards[0] = -1;
         this.cards[1].cardState = 'save'
-        this.cards[1] = -1;
         this.cards[2].cardState = 'discard'
-        this.cards[2] = -1;
+
+        this.drawTimer = 50;
+        this.isWaitingToDraw;
     }
 
     this.swapCards = function(n, m) {
@@ -99,11 +103,27 @@ Hand = function() {
     }
 
     this.runCards = function(mouseX,mouseY) {
+
         for (i = 0;i < 3; i++) {
-            //console.log(this.cards[i].position)
         }
         this.cards.filter(card => card != -1).forEach(card => card.runObject(mouseX,mouseY));
+
+        if (this.drawTimer > 0) {
+            this.drawTimer -= 1;
+        } else if (this.drawTimer === 0) {
+            this.clearCards();
+            this.drawCards();
+            this.submitButton.enabled = true;
+            this.drawTimer = -1
+        }
     }
+
+    this.clearCards = function() {
+        this.cards[0] = -1;
+        this.cards[1] = -1;
+        this.cards[2] = -1;
+    }
+
 
 }
 

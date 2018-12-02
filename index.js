@@ -26,10 +26,9 @@ app.setup = function () {
     deck.init(25)
     let saveDeck = new Deck()
     saveDeck.init(0)
-    let hand = new Hand()
-    hand.init(deck, saveDeck)
-
+    let hand = new Hand();
     let submitButton = new graphics.SubmitObj();
+    hand.init(deck, saveDeck, submitButton)
     submitButton.init(hand);
 
     hand.drawCards();

@@ -11,7 +11,6 @@ graphics.CardObj = function() {
         this.animateFrame = 0;
         this.interactable = false;
         this.position = pos;
-        //console.log(pos)
         this.sprite = this.getSprite(card)
         this.sprite.width = 175
         this.sprite.height = 280
@@ -29,7 +28,6 @@ graphics.CardObj = function() {
     }
 
     this.isMousedOver = function(mouseX, mouseY) {
-        //console.log(mouseX, mouseY)
         return (
             this.sprite.x <= mouseX && this.sprite.x + this.sprite.width >= mouseX &&
             this.sprite.y <= mouseY && this.sprite.y + this.sprite.height >= mouseY 
@@ -37,7 +35,6 @@ graphics.CardObj = function() {
     }
 
     this.onHover = function() {
-        console.log("Hey I'm " + this.position + " and you're watching the hover channel")
     }
 
     this.runObject = function(mouseX,mouseY) {
@@ -53,7 +50,6 @@ graphics.CardObj = function() {
         this.sprite.y = 720 - 20 - this.sprite.height;
         this.interactable = true;
         this.cardState = 'hand'
-        //console.log(this.sprite.x, this.sprite.y)
     }
 
     this.animate = function() {
@@ -89,10 +85,8 @@ graphics.CardObj = function() {
     }
 
     this.animateDestroy = function() {
-        console.log("oh no")
         this.destroyCounter++;
         if (this.destroyCounter > 50) {
-            console.log("oh yes)")
             app.stage.removeChild(this.sprite);
         }
     }
@@ -102,6 +96,7 @@ graphics.CardObj = function() {
 graphics.SubmitObj = function() {
     this.sprite;
     this.hand;
+    this.enabled;
 
     this.init = function(hand) {
         this.sprite = new PIXI.Sprite(PIXI.loader.resources["pics/tempsubmit.png"].texture)
@@ -110,6 +105,7 @@ graphics.SubmitObj = function() {
         this.sprite.width = 165;
         this.sprite.height = 60;
         this.hand = hand;
+        this.enabled = true;
         app.stage.addChild(this.sprite)
     }
 
@@ -122,13 +118,13 @@ graphics.SubmitObj = function() {
     }
 
     this.onHover = function() {
-        console.log("Hey I'm submitman and you're watching the hover channel")
     }
 
     this.runObject = function(mouseX,mouseY) {
-        if (this.isMousedOver(mouseX,mouseY)) {
+        if (this.enabled && this.isMousedOver(mouseX,mouseY)) {
             this.onHover();
             if (app.mouse_pressed) {
+                this.enabled = false;
                 this.hand.submit();
             }
         }
