@@ -30,12 +30,15 @@ app.setup = function () {
     let submitButton = new graphics.SubmitObj();
     hand.init(deck, saveDeck, submitButton)
     submitButton.init(hand);
+    let gameBoard = new gameBoard();
+    gameBoard.init();
 
     hand.drawCards();
 
     let gameBox = {
         hand:hand,
         submit:submitButton,
+        gameBoard:gameBoard,
     }
     // Start the game loop
     app.gameLoop(gameBox);

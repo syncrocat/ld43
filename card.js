@@ -126,38 +126,3 @@ Hand = function() {
 
 
 }
-
-GameBoard = function () {
-
-    this.init = function() {
-        this.swampState = 'NORMAL'
-        this.deck = new Deck(25);
-        this.saveDeck = new Deck(0);
-        this.hand = new Hand();
-        this.hand.drawCards(this.deck)
-        this.roundState = 0;
-    }
-
-    this.progressRound = function(n) {
-        switch (this.roundState) {
-            case 0:
-                this.hand.useCard(n)
-                break;
-            case 1:
-                this.hand.discardCard(n)
-                break;
-            case 2:
-                let availCards = this.hand.getAvailableCards()
-                for (i = 0; i < availCards.size(); i++) {
-                    this.hand.saveCard(availCards[i])
-                }
-                break;
-            case 3:
-                this.hand.drawCards() 
-                break;          
-        }
-    }
-}
-
-
-
