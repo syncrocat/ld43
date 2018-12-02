@@ -10,32 +10,44 @@ graphics.CardObj = function() {
     this.hoverTexture;
     this.selectedTexture;
     this.isHovered;
-    this.clicking;
 
     this.init = function(card, pos, hand) {
-        this.regTexture = this.getTexture(card, 'pics/tempcard.png');
-        this.hoverTexture = this.getTexture(card, 'pics/tempcardhovered.png');
-        this.selectedTexture = this.getTexture(card, 'pics/tempcardselected.png');
+        this.regTexture = this.getRegTexture(card);
+        this.hoverTexture = this.getHoverTexture(card, 'pics/tempcardhovered.png');
+        this.selectedTexture = this.getSelectedTexture(card, 'pics/tempcardselected.png');
         this.sprite = this.getSprite(card);
         this.animateFrame = 0;
         this.interactable = false;
         this.position = pos;
-        this.sprite.width = 175
-        this.sprite.height = 280
+        this.sprite.width = 200
+        this.sprite.height = 200
         this.sprite.x = 0;
         this.sprite.y = 0;
         this.card = card;
         this.cardState = 'draw'
         this.destroyCounter = 0;
         this.isHovered = false;
-        this.clicking = false;
         this.hand = hand;
         app.stage.addChild(this.sprite);
     }
 
-    this.getTexture = function(card, img) {
-        console.log(img);
-        return PIXI.loader.resources[img].texture;
+    this.getRegTexture = function(card) {
+        switch (card.cardType) {
+            case "Wolves":
+                return PIXI.loader.resources["pics/wolfcard.png"].texture;
+            case "Deer":
+                return PIXI.loader.resources["pics/deercard.png"].texture;
+            default:
+                return PIXI.loader.resources["pics/tempcard.png"].texture;
+        }
+    }
+
+    this.getHoverTexture = function(card) {
+        return PIXI.loader.resources["pics/tempcardhovered.png"].texture;
+    }
+
+    this.getSelectedTexture = function(card) {
+        return PIXI.loader.resources["pics/tempcardselected.png"].texture;
     }
 
     this.getSprite = function(card) {
@@ -59,6 +71,7 @@ graphics.CardObj = function() {
 
     this.onSelect = function() {
         if (this.position === this.hand.selectedCardPos) {
+            console.log(";)");
             // Deselect the card
             this.hand.selectedCardPos = -1;
         } else {
@@ -74,30 +87,28 @@ graphics.CardObj = function() {
     }
 
     this.runObject = function(mouseX,mouseY) {
+        let ohno = Math.random();
         if (this.isMousedOver(mouseX,mouseY)) {
             this.onHover();
-            if (app.mouse_pressed && !this.clicking) {
-                this.clicking = true;
+            if (app.mouse_pressed && !app.mouse_held) {
+                app.mouse_held = true;
+                console.log("SELECTING CARD", this.position, ohno);
                 this.onSelect();
-            } else if (!app.mouse_pressed) {
-                this.clicking = false;
             }
         } else {
             this.offHover();
         }
-        this.animate()
+
+        this.animate();
     }
 
     this.animateDraw = function() {
-        this.sprite.x = 50 + (this.position * (47 + this.sprite.width))
-
-        this.sprite.y = 720 - 20 - this.sprite.height;
+        this.refreshPosition();
         this.interactable = true;
         this.cardState = 'hand'
     }
 
     this.animate = function() {
-        console.log(this.hand.selectedCardPos);
         switch (this.cardState)  {
             case 'draw' :
                 this.animateDraw();
@@ -146,6 +157,11 @@ graphics.CardObj = function() {
         if (this.destroyCounter > 50) {
             app.stage.removeChild(this.sprite);
         }
+    }
+
+    this.refreshPosition = function() {
+        this.sprite.x = 30 + (this.position * (30 + this.sprite.width));
+        this.sprite.y = 720 - 20 - this.sprite.height;
     }
 
 }

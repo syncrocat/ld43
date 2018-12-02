@@ -15,6 +15,8 @@ PIXI.loader
 .add("pics/tempcard.png")
 .add("pics/tempcardhovered.png")
 .add("pics/tempcardselected.png")
+.add("pics/wolfcard.png")
+.add("pics/deercard.png")
 .add("pics/tempdeckcard.png")
 .add("pics/tempsubmit.png")
 .load(function () {
@@ -50,8 +52,6 @@ app.gameLoop = function (gameBox) {
     // Comment
     requestAnimationFrame(() => app.gameLoop(gameBox));
 
-    //console.log(app.mouse_pressed)
-
     // Get mouse data
     var mouseposition = app.renderer.plugins.interaction.mouse.global;
     let mouseX = Math.round(mouseposition.x)
@@ -61,6 +61,7 @@ app.gameLoop = function (gameBox) {
     gameBox.hand.runCards(mouseX,mouseY);
     gameBox.submit.runObject(mouseX,mouseY);
 
+    app.mouse_held = app.mouse_pressed;
 
     // Render my game palsy
     app.renderer.render(app.stage);

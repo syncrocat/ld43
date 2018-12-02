@@ -35,7 +35,7 @@ Deck = function() {
         this.cards = [];
         for (i = 0; i < n; i++) {
             let card = new Card()
-            card.init(i)
+            card.init(i, i % 2 == 0 ? "Wolves" : "Deer");
             this.cards.push(card);
         }
     }
@@ -99,6 +99,15 @@ Hand = function() {
         let temp = this.cards[n];
         this.cards[n] = this.cards[m];
         this.cards[m] = temp;
+
+        this.cards[n].position = n;
+        this.cards[m].position = m;
+
+        this.cards[n].refreshPosition();
+        this.cards[m].refreshPosition();
+
+        this.cards[n].sprite.texture = this.cards[n].hoverTexture;
+        this.cards[m].sprite.texture = this.cards[m].regTexture;
     }
 
     this.drawCards = function() {
@@ -121,9 +130,6 @@ Hand = function() {
     }
 
     this.runCards = function(mouseX,mouseY) {
-
-        for (i = 0;i < 3; i++) {
-        }
         this.cards.filter(card => card != -1).forEach(card => card.runObject(mouseX,mouseY));
 
         if (this.drawTimer > 0) {
