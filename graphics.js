@@ -172,11 +172,9 @@ graphics.SubmitObj = function() {
     this.enabled;
 
     this.init = function(hand) {
-        this.sprite = new PIXI.Sprite(PIXI.loader.resources["pics/tempsubmit.png"].texture)
-        this.sprite.x = 500
-        this.sprite.y = 350;
-        this.sprite.width = 165;
-        this.sprite.height = 60;
+        this.sprite = new PIXI.Sprite(PIXI.loader.resources["pics/commitbutton.png"].texture)
+        this.sprite.x = 530
+        this.sprite.y = 420;
         this.hand = hand;
         this.enabled = true;
         app.stage.addChild(this.sprite)
@@ -211,13 +209,87 @@ graphics.Deck = function() {
     
     this.init = function(numCards) {
         this.numCards = numCards;
-        this.sprite = new PIXI.Sprite(PIXI.loader.resources["pics/tempdeckcard.png"].texture);
-        this.sprite.x = x;
-        this.sprite.y = y;
+        this.sprite = new PIXI.Sprite(PIXI.loader.resources["pics/deck.png"].texture);
+        this.sprite.x = 550;
+        this.sprite.y = 46;
         app.stage.addChild(this.sprite);
     }
 
     this.setNumCards = function(n) {
         this.numCards = n;
+    }
+}
+
+graphics.World = function() {
+    this.sprite;
+    this.textures = {};
+
+    this.init = function() {
+        this.textures = {
+            treeswampwater: this.loadTexture("pics/treeswampwater.png"),
+            treetreewater: this.loadTexture("pics/treetreewater.png"),
+            treewaterwater: this.loadTexture("pics/treewaterwater.png"),
+            treeswampoil: this.loadTexture("pics/treeswampoil.png"),
+            treetreeoil: this.loadTexture("pics/treetreeoil.png"),
+            treeoiloil: this.loadTexture("pics/treeoiloil.png")
+        };
+
+        this.sprite = new PIXI.Sprite(this.textures.treeswampwater);
+        this.sprite.x = 75;
+        this.sprite.y = 130;
+        app.stage.addChild(this.sprite);
+    }
+
+    this.loadTexture = function(img) {
+        return PIXI.loader.resources[img].texture;
+    }
+}
+
+graphics.Log = function() {
+    this.sprite;
+
+    this.init = function() {
+        this.sprite = new PIXI.Sprite(PIXI.loader.resources["pics/logbackground.png"].texture);
+        this.sprite.x = 10;
+        this.sprite.y = 10;
+        app.stage.addChild(this.sprite);
+    }
+}
+
+graphics.CardBackground = function() {
+    this.sprite;
+
+    this.init = function(x, y) {
+        this.sprite = new PIXI.Sprite(PIXI.loader.resources["pics/cardbackground.png"].texture);
+        this.sprite.x = x;
+        this.sprite.y = y;
+        app.stage.addChild(this.sprite);
+    }
+}
+
+graphics.HelpButtonObj = function() {
+    this.sprite;
+
+    this.init = function() {
+        this.sprite = new PIXI.Sprite(PIXI.loader.resources["pics/helpbutton.png"].texture);
+        this.sprite.x = 50;
+        this.sprite.y = 420;
+        app.stage.addChild(this.sprite);
+    }
+}
+
+graphics.BackgroundObj = function() {
+    this.sprite;
+    this.cloudSprite;
+
+    this.init = function() {
+        this.sprite = new PIXI.Sprite(PIXI.loader.resources["pics/background.png"].texture);
+        this.cloudSprite = new PIXI.Sprite(PIXI.loader.resources["pics/cloudbackground.png"].texture);
+        this.sprite.x = 0;
+        this.sprite.y = 0;
+        this.cloudSprite.x = 0;
+        this.cloudSprite.y = 0;
+        app.stage.addChild(this.sprite);
+        app.stage.addChild(this.cloudSprite);
     }
 }
