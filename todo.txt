@@ -1,0 +1,21 @@
+[-  Animal sprites in world] 1 Hour
+
+	- Think of cards	- 30 min
+	- Pictures for cards	- 30 m
+	- Code the fucking cards - 30m
+
+[ - Text in the log
+- Text on the deck
+- SCORE
+- text on cards when hover ] 1 Hour
+
+- Oil
+	- Different terrains
+
+Post-5
+- Other sprites in world [card-based]
+	- Clouds moving
+	- Mosquito cloud
+	- A N A C O N D A
+
+- commit depressed sprite

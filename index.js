@@ -31,6 +31,19 @@ PIXI.loader
 .add("pics/logbackground.png")
 .add("pics/popup.png")
 .add("pics/cloudbackground.png")
+.add("pics/animals/bat1.png")
+.add("pics/animals/bat2.png")
+.add("pics/animals/deer1.png")
+.add("pics/animals/deer2.png")
+.add("pics/animals/frog.png")
+.add("pics/animals/salmon1.png")
+.add("pics/animals/salmon2.png")
+.add("pics/animals/salmon3.png")
+.add("pics/animals/wolf1.png")
+.add("pics/animals/wolf2.png")
+.add("pics/animals/wolf3.png")
+.add("pics/animals/squid1.png")
+.add("pics/animals/squid2.png")
 .load(function () {
     app.setup();
 });
@@ -64,14 +77,21 @@ app.setup = function () {
     let helpButton = new graphics.HelpButtonObj();
     helpButton.init();
 
-    
+    let test = new graphics.AnimalObj();
+    test.init('salmon', gameBoard);
+    let testDeer = new graphics.AnimalObj();
+    testDeer.init('deer',gameBoard)
+    let animals = []
+    animals.push(test)
+    animals.push(testDeer)
     
     hand.drawCards();
 
     let gameBox = {
         hand:hand,
         submit:submitButton,
-        gameBoard:gameBoard
+        gameBoard:gameBoard,
+        animals:animals
     };
     // Start the game loop
     app.gameLoop(gameBox);
@@ -85,12 +105,19 @@ app.gameLoop = function (gameBox) {
     var mouseposition = app.renderer.plugins.interaction.mouse.global;
     let mouseX = Math.round(mouseposition.x)
     let mouseY = Math.round(mouseposition.y)
+    if (app.mouse_pressed) console.log(mouseX,mouseY)
     
     // 
     gameBox.hand.runCards(mouseX,mouseY);
     gameBox.submit.runObject(mouseX,mouseY);
+    for (let animal in gameBox.animals) {
+        gameBox.animals[animal].runObject();
+    }
+    //gameBox.test.runObject();
 
     app.mouse_held = app.mouse_pressed;
+
+    
 
     // Render my game palsy
     app.renderer.render(app.stage);

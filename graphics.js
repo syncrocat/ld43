@@ -293,3 +293,91 @@ graphics.BackgroundObj = function() {
         app.stage.addChild(this.cloudSprite);
     }
 }
+
+graphics.AnimalObj = function() {
+    this.animalName;
+    this.gameBoard;
+    this.textures;
+    this.animationState;
+    this.frame;
+
+    this.init = function(animalName, gameBoard) {
+
+        this.animalName = animalName;
+        this.gameBoard = gameBoard;
+        this.animationState = 0;
+        if (this.animalName == 'salmon') this.animationState = 1;
+        this.frame = 0;
+
+        this.textures = [];
+        // This is the worst possible way to do this but we're short on time so don't @ me
+        let numTexts = (animalName == 'wolf' || animalName == 'salmon') ? 3 : 2;
+        if (animalName == 'frog') numTexts = 1;
+        for (let i = 1; i < numTexts + 1; i++) {
+            let imgName = "pics/animals/" + animalName + i + '.png';
+            console.log(imgName)
+            this.textures.push(this.loadTexture(imgName))
+        };
+        
+        this.sprite = new PIXI.Sprite(this.textures[0]);
+        this.sprite.x = -10;
+        this.sprite.y = -10;
+
+        this.sprite.anchor.set(0.5);
+        
+        
+
+        this.placeOnGameBoard();
+        app.stage.addChild(this.sprite)
+    }
+
+    this.placeOnGameBoard = function() {
+        console.log(this.animalName)
+        if (this.animalName == 'deer') {
+            this.sprite.x = 367 +24
+            this.sprite.y = 289 +8
+        }
+        if (this.animalName == 'salmon') {
+            this.sprite.scale.x = -1
+            this.sprite.scale.y = -1
+            this.sprite.x = 520;
+            this.sprite.y = 337;
+        }
+    }
+
+    this.loadTexture = function(img) {
+        console.log(img)
+        return PIXI.loader.resources[img].texture;
+    }
+
+    this.runDeer = function() {
+        if (this.frame > 100) {
+            this.sprite.y += this.animationState == 0 ? 5 : -5;
+            this.animationState = this.animationState == 0 ? 1 : 0;
+            this.sprite.texture = this.textures[this.animationState];
+            this.frame = 0;
+        }
+    }
+
+    this.runSalmon = function() {
+        if (this.frame >1) {
+            this.sprite.x -= 0.3 * this.animationState
+            this.sprite.y += 0.3 * (6/11) * this.animationState
+            this.frame = 0;
+
+            if (this.sprite.x < 345 || this.sprite.x > 590) {
+                this.animationState = this.animationState * -1
+                this.sprite.scale.x *= -1;
+                this.sprite.scale.y *= -1;
+            }
+        } 
+        
+    }
+
+    this.runObject = function() {
+        this.frame += 1;
+        if (this.animalName == 'deer') this.runDeer()
+        if (this.animalName == 'salmon') this.runSalmon()
+
+    }
+}
