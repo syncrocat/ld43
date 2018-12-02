@@ -55,12 +55,14 @@ Hand = function() {
     this.drawTimer;
     this.isWaitingToDraw;
     this.submitButton;
+    this.selectedCardPos;
 
     this.init = function(deck, saveDeck, submitButton) {
         this.cards = [-1, -1, -1]
         this.deck = deck;
         this.saveDeck = saveDeck;
         this.submitButton = submitButton;
+        this.selectedCardPos = -1;
     }
 
     this.submit = function() {
@@ -74,20 +76,21 @@ Hand = function() {
         this.cards[2].cardState = 'discard'
 
         this.drawTimer = 50;
-        this.isWaitingToDraw;
+        this.selectedCardPos = -1;
+        this.isWaitingToDraw; // ?????
     }
 
     this.swapCards = function(n, m) {
         let temp = this.cards[n];
         this.cards[n] = this.cards[m];
         this.cards[m] = temp;
-    }   
+    }
 
     this.drawCards = function() {
         for (let i = 0; i < 3; i++) {
             let card = this.deck.drawCard();
             this.cards[i] = new graphics.CardObj()
-            this.cards[i].init(card, i)
+            this.cards[i].init(card, i, this)
         }
 
     }
