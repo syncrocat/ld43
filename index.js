@@ -90,10 +90,29 @@ app.setup = function () {
     let test = new graphics.AnimalObj();
     test.init('salmon', gameBoard);
     let testDeer = new graphics.AnimalObj();
-    testDeer.init('deer',gameBoard)
+    testDeer.init('squid',gameBoard)
+    let testDeer2 = new graphics.AnimalObj();
+    testDeer2.init('bat',gameBoard)
+    let testDeer3 = new graphics.AnimalObj();
+    testDeer3.init('wolf',gameBoard)
+    let m = new graphics.AnimalObj();
+    m.init('frog',gameBoard)
+    let mm = new graphics.AnimalObj();
+    mm.init('deer',gameBoard)
+    let mmm = new graphics.AnimalObj();
+    mmm.init('deer',gameBoard)
+    let mmmm = new graphics.AnimalObj();
+    mmmm.init('deer',gameBoard)
     let animals = []
     animals.push(test)
     animals.push(testDeer)
+    animals.push(testDeer2)
+    animals.push(testDeer3)
+    animals.push(m)
+    animals.push(mm)
+    animals.push(mmm)
+    animals.push(mmmm)
+
     
     hand.drawCards();
 

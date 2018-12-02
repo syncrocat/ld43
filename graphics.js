@@ -289,19 +289,35 @@ graphics.BackgroundObj = function() {
     }
 }
 
+app.numDeer = 0;
+
 graphics.AnimalObj = function() {
+    this.speed;
     this.animalName;
     this.gameBoard;
     this.textures;
     this.animationState;
+    this.animationState2;
+    this.animationStates;
+    this.headDownTimer;
+    this.headUpTimer;
+    this.changeTimer;
+    this.numFish;
+    this.xPointLeft;
+    this.xPointRight;
+    this.speeds;
     this.frame;
 
     this.init = function(animalName, gameBoard) {
+        this.speed = 0.5;
+        
 
         this.animalName = animalName;
         this.gameBoard = gameBoard;
         this.animationState = 0;
-        if (this.animalName == 'salmon') this.animationState = 1;
+        this.animationState2 = 0;
+        
+        //if (this.animalName == 'salmon') this.animationState = 1;
         this.frame = 0;
 
         this.textures = [];
@@ -314,29 +330,99 @@ graphics.AnimalObj = function() {
             this.textures.push(this.loadTexture(imgName))
         };
         
-        this.sprite = new PIXI.Sprite(this.textures[0]);
-        this.sprite.x = -10;
-        this.sprite.y = -10;
+        if (this.animalName != 'salmon') {
+            this.sprite = new PIXI.Sprite(this.textures[0]);
+            this.sprite.x = -10;
+            this.sprite.y = -10;
+    
+            this.sprite.anchor.set(0.5);
+            this.placeOnGameBoard();
+            app.stage.addChild(this.sprite)
+        } else {
+            this.sprites = []
+            this.numFish =7;
+            this.animationStates = []
+            this.xPointLeft = [];
+            this.xPointRight = [];
+            this.speeds = [];
+            for (let i = 0; i<this.numFish; i++) {
+                this.animationStates.push(1)
+                let fishyman = Math.floor(Math.random() * 3)
+                this.sprites[i] = new PIXI.Sprite(this.textures[fishyman])
+                let bigMOOD = Math.floor(Math.random() * 50)
+                this.sprites[i].x = 520 - bigMOOD
+                this.sprites[i].y = 337 - bigMOOD * (6/11)
+                let randMoved = Math.floor(Math.random() * 200 - 40)
+                this.sprites[i].x -= randMoved;
+                this.sprites[i].y += randMoved*(6/11);
+                this.sprites[i].scale.x *= -1
+                this.sprites[i].scale.y *= -1
+                this.xPointLeft[i] = 345 - bigMOOD
+                this.xPointRight[i] = 590 - bigMOOD * (6/11)
+                this.speeds[i] = 0.3 + Math.random() * 0.4 - 0.2
+                console.log(this.sprites[i].x)
+                console.log(this.sprites[i].y)
+                this.sprites[i].anchor.set(0.5);
+                app.stage.addChild(this.sprites[i])
+            }
 
-        this.sprite.anchor.set(0.5);
+        }
         
         
+        
 
-        this.placeOnGameBoard();
-        app.stage.addChild(this.sprite)
+        
+        
     }
 
     this.placeOnGameBoard = function() {
-        console.log(this.animalName)
+        console.log(app.numDeer)
         if (this.animalName == 'deer') {
-            this.sprite.x = 367 +24
-            this.sprite.y = 289 +8
+            app.numDeer += 1;
+            if (app.numDeer ==1 ) {
+                this.sprite.x = 367 +24
+                this.sprite.y = 289 +8
+                this.headUpTimer = 100;
+                this.headDownTimer = 100;
+            } else if (app.numDeer ==2) {
+                this.sprite.x = 461 
+                this.sprite.y = 240
+                this.sprite.scale.x = -1;
+                this.headUpTimer = 200;
+                this.headDownTimer = 50;
+                this.frame = 30;
+            } else {
+                this.sprite.x = 229 
+                this.sprite.y = 314
+                this.sprite.scale.x = -1
+                this.headUpTimer = 150;
+                this.headDownTimer = 75;
+                this.frame = 89;
+            }
+            this.changeTimer = this.headDownTimer;
         }
         if (this.animalName == 'salmon') {
             this.sprite.scale.x = -1
             this.sprite.scale.y = -1
             this.sprite.x = 520;
             this.sprite.y = 337;
+        }
+        if (this.animalName == 'wolf') {
+            this.sprite.x = 411
+            this.sprite.y = 213
+        }
+        if (this.animalName == 'frog') {
+            this.sprite.x = 206
+            this.sprite.y = 280
+        }
+        if (this.animalName == 'bat') {
+            this.animationState = 1;
+            this.sprite.x = 205
+            this.sprite.y = 200
+        }
+        if (this.animalName == 'squid') {
+            this.sprite.x = 354
+            this.sprite.y = 414
         }
     }
 
@@ -346,26 +432,100 @@ graphics.AnimalObj = function() {
     }
 
     this.runDeer = function() {
-        if (this.frame > 100) {
+        if (this.frame > this.changeTimer) {
             this.sprite.y += this.animationState == 0 ? 5 : -5;
+            this.changeTimer = this.animationState == 0 ? this.headUpTimer : this.headDownTimer;
             this.animationState = this.animationState == 0 ? 1 : 0;
             this.sprite.texture = this.textures[this.animationState];
             this.frame = 0;
         }
     }
 
-    this.runSalmon = function() {
-        if (this.frame >1) {
-            this.sprite.x -= 0.3 * this.animationState
-            this.sprite.y += 0.3 * (6/11) * this.animationState
-            this.frame = 0;
-
-            if (this.sprite.x < 345 || this.sprite.x > 590) {
-                this.animationState = this.animationState * -1
-                this.sprite.scale.x *= -1;
-                this.sprite.scale.y *= -1;
+    this.runWolf = function() {
+        if (this.animationState == 0) {
+            if (this.frame > 300) {
+                //this.frame = 0
+                this.animationState = 1;
             }
-        } 
+        } else if (this.animationState ==1 ) {
+            if (this.frame > 30) {
+                this.animationState2 = this.animationState2 == 0? 1 : 0;
+                this.sprite.texture = this.textures[this.animationState2 + 1];
+                this.frame = 0;
+            }
+            this.sprite.x -= 0.25
+            if (this.sprite.x < 290) {
+                this.sprite.scale.x = -1;
+                this.animationState = 2;
+            }
+        } else {
+            if (this.frame > 30) {
+                this.animationState2 = this.animationState2 == 0? 1 : 0;
+                this.sprite.texture = this.textures[this.animationState2 + 1];
+                this.frame = 0;
+            }
+            this.sprite.x += 0.25
+            if (this.sprite.x >= 411) {
+                this.sprite.scale.x = 1;
+                this.animationState = 0;
+                this.frame = 0;
+            }
+        }
+    }
+
+    this.runBat = function() {
+        if (this.frame > 30) {
+            this.animationState2 = this.animationState2 == 0? 1 : 0;
+            this.sprite.texture = this.textures[this.animationState2 ];
+            this.frame = 0;
+        }
+        this.sprite.x -= 0.5 * this.animationState
+        this.sprite.y += 0.5 * (6/11) * this.animationState
+        //this.frame = 0;
+
+        if (this.sprite.x < 113 || this.sprite.x > 205) {
+            this.animationState = this.animationState * -1
+            this.sprite.scale.x *= -1;
+            //this.sprite.scale.y *= -1;
+        }
+
+    }
+
+    this.runSquid = function() {
+        this.sprite.x += this.speed;
+        this.sprite.y -= this.speed * (6/11);
+        if (this.frame > 100) {
+            this.sprite.texture = this.textures[1];
+            this.speed = 4 * (this.speed / Math.abs(this.speed));
+            this.frame = 0;
+        }
+        if (Math.abs(this.speed) > 0.5) {
+            this.speed *= 0.95;
+            this.frame = 0;
+        } else {
+            this.sprite.texture = this.textures[0];
+        }
+        if (this.sprite.x < 345 || this.sprite.x > 590) {
+            this.speed *= -1;
+            this.sprite.scale.x *= -1;
+            this.sprite.scale.y *= -1;
+        }
+    }
+
+    this.runSalmon = function() {
+        for (let i = 0; i < this.numFish; i++) {
+            //console.log(this.animationStates[i])
+            this.sprites[i].x -= this.speeds[i] * this.animationStates[i]
+            this.sprites[i].y += this.speeds[i] * (6/11) * this.animationStates[i]
+
+            if (this.sprites[i].x < this.xPointLeft[i] || this.sprites[i].x > this.xPointRight[i]) {
+                this.animationStates[i] = this.animationStates[i] * -1
+                this.sprites[i].scale.x *= -1;
+                this.sprites[i].scale.y *= -1;
+            }
+            
+        }
+        
         
     }
 
@@ -373,6 +533,9 @@ graphics.AnimalObj = function() {
         this.frame += 1;
         if (this.animalName == 'deer') this.runDeer()
         if (this.animalName == 'salmon') this.runSalmon()
+        if (this.animalName == 'wolf') this.runWolf()
+        if (this.animalName == 'bat') this.runBat();
+        if (this.animalName == 'squid') this.runSquid();
 
     }
 }
