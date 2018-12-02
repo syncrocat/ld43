@@ -7,3 +7,5 @@ app.mouseDown = function () {
 app.mouseUp = function () {
     app.mouse_pressed = false;
 }
+
+app.mouse_held = false;
