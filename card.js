@@ -71,14 +71,22 @@ Card = function() {
 
 
 Deck = function() {
+    this.textObj;
+    this.cards;
+    this.text;
 
-    this.init = function(gameBoard, n) {
+    this.init = function(gameBoard, n, text, x, y) {
+        this.text = text;
         this.cards = [];
         for (i = 0; i < n; i++) {
             let card = new Card()
             card.init(gameBoard, i % 2 == 0 ? "Wolf" : "Deer");
             this.cards.push(card);
         }
+
+        this.textObj = new graphics.TextObj();
+        this.textObj.init(text, {align: "left"}, x, y);//475, 12);
+        this.updateCardText();
     }
 
     this.shuffle = function() {
@@ -86,21 +94,29 @@ Deck = function() {
     }
 
     this.drawCard = function () {
-        return this.cards.pop()
+        let card = this.cards.pop()
+        this.updateCardText();
+        return card;
     }
 
     this.addCard = function (card) {
         this.cards.push(card)
+        this.updateCardText();
     }
 
     // Adds a card to a random position in the deck
     this.insertCard = function(card) {
         let randint = Math.floor(Math.random() * this.cards.size());
         this.cards.splice(randint,0,card)
+        this.updateCardText();
     }
 
     this.getDeckSize = function(n=0) {
-        return this.cards.size() 
+        return this.cards.length;
+    }
+
+    this.updateCardText = function() {
+        this.textObj.text.text = this.text + this.getDeckSize();
     }
 }
 
@@ -157,6 +173,8 @@ Hand = function() {
 
     this.drawCards = function() {
         for (let i = 0; i < 3; i++) {
+            console.log("Made it here");
+            console.log(this.deck);
             let card = this.deck.drawCard();
             this.cards[i] = new graphics.CardObj()
             this.cards[i].init(card, i, this)

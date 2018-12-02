@@ -123,6 +123,7 @@ GameBoard = function () {
     this.logQueue;
     this.terrainState;
     this.animalValues;
+    this.logTextObj;
 
     this.init = function() {
         this.stars = 0;
@@ -130,6 +131,8 @@ GameBoard = function () {
         this.effectTimers = [];
         this.logQueue = [];
         this.terrainState = "treeswampwater";
+        this.logTextObj = new graphics.TextObj();
+        this.logTextObj.init("", {fontSize: 12, align:"left"}, 25, 25);
 
         this.animalValues = {
             'youngDeer' : 0,
@@ -165,9 +168,15 @@ GameBoard = function () {
 
     this.log = function(message) {
         console.log(message)
+        console.log(this.logTextObj.text.text);
         this.logQueue.unshift(message);
         if (this.logQueue.length > 5) {
             this.logQueue.pop();
+        }
+
+        this.logTextObj.text.text = "";
+        for (i = this.logQueue.length - 1; i >= 0; i--) {
+            this.logTextObj.text.text += this.logQueue[i] + "\n";
         }
     }
 

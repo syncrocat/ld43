@@ -35,7 +35,7 @@ PIXI.loader
 .add("pics/animals/bat2.png")
 .add("pics/animals/deer1.png")
 .add("pics/animals/deer2.png")
-.add("pics/animals/frog.png")
+.add("pics/animals/frog1.png")
 .add("pics/animals/salmon1.png")
 .add("pics/animals/salmon2.png")
 .add("pics/animals/salmon3.png")
@@ -52,28 +52,38 @@ app.setup = function () {
     app.mouse_pressed = false;
     let background = new graphics.BackgroundObj();
     background.init();
+    let log = new graphics.Log();
+    log.init();
 
     let gameBoard = new GameBoard();
     gameBoard.init();
     let deckObj = new graphics.Deck();
     deckObj.init();
     let deck = new Deck()
-    deck.init(gameBoard, 25)
+    deck.init(gameBoard, 30, "Number of cards: ", 475, 12);
     let saveDeck = new Deck()
-    saveDeck.init(gameBoard, 0)
+    saveDeck.init(gameBoard, 0, "Saved cards: ", 475, 150);
     let hand = new Hand();
     let submitButton = new graphics.SubmitObj();
-    hand.init(gameBoard, deck, saveDeck, submitButton)
+    hand.init(gameBoard, deck, saveDeck, submitButton);
     submitButton.init(hand);
     let world = new graphics.World();
     world.init();
-    let log = new graphics.Log();
-    log.init();
+    
     let cardBackgrounds = [];
     for (let i = 0; i < 3; i++) {
         cardBackgrounds.push(new graphics.CardBackground());
-        cardBackgrounds[i].init(15 + (202 + 42) * i, 500);
+        cardBackgrounds[i].init(15 + (202 + 42) * i, 480);
     }
+    let cardLabels = [];
+    cardLabels.push(new graphics.TextObj())
+    cardLabels.push(new graphics.TextObj());
+    cardLabels.push(new graphics.TextObj());
+    let style = {align: "left"};
+    cardLabels[0].init("ACTIVATE", style, 15 + 101 - 60, 680);
+    cardLabels[1].init("SAVE", style, 15 + 202 + 42 + 101 - 40, 680);
+    cardLabels[2].init("DISCARD", style, 15 + 202 + 42 + 202 + 42 + 101 - 55, 680);
+
     let helpButton = new graphics.HelpButtonObj();
     helpButton.init();
 
@@ -86,6 +96,9 @@ app.setup = function () {
     animals.push(testDeer)
     
     hand.drawCards();
+
+    let testText = new graphics.TextObj();
+    testText.init();
 
     let gameBox = {
         hand:hand,

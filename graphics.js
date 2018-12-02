@@ -19,10 +19,10 @@ graphics.CardObj = function() {
         this.animateFrame = 0;
         this.interactable = false;
         this.position = pos;
-        this.sprite.width = 200
-        this.sprite.height = 200
-        this.sprite.x = 0;
-        this.sprite.y = 0;
+        this.sprite.width = 175;
+        this.sprite.height = 175;
+        this.sprite.x = -500;
+        this.sprite.y = -500;
         this.card = card;
         this.cardState = 'draw'
         this.destroyCounter = 0;
@@ -161,7 +161,7 @@ graphics.CardObj = function() {
 
     this.refreshPosition = function() {
         this.sprite.x = 30 + (this.position * (30 + this.sprite.width));
-        this.sprite.y = 720 - 20 - this.sprite.height;
+        this.sprite.y = 720 - 50 - this.sprite.height;
     }
 
 }
@@ -174,7 +174,7 @@ graphics.SubmitObj = function() {
     this.init = function(hand) {
         this.sprite = new PIXI.Sprite(PIXI.loader.resources["pics/commitbutton.png"].texture)
         this.sprite.x = 530
-        this.sprite.y = 420;
+        this.sprite.y = 400;
         this.hand = hand;
         this.enabled = true;
         app.stage.addChild(this.sprite)
@@ -207,16 +207,11 @@ graphics.Deck = function() {
     this.sprite;
     this.numCards;
     
-    this.init = function(numCards) {
-        this.numCards = numCards;
+    this.init = function() {
         this.sprite = new PIXI.Sprite(PIXI.loader.resources["pics/deck.png"].texture);
         this.sprite.x = 550;
         this.sprite.y = 46;
         app.stage.addChild(this.sprite);
-    }
-
-    this.setNumCards = function(n) {
-        this.numCards = n;
     }
 }
 
@@ -236,7 +231,7 @@ graphics.World = function() {
 
         this.sprite = new PIXI.Sprite(this.textures.treeswampwater);
         this.sprite.x = 75;
-        this.sprite.y = 130;
+        this.sprite.y = 110;;
         app.stage.addChild(this.sprite);
     }
 
@@ -273,7 +268,7 @@ graphics.HelpButtonObj = function() {
     this.init = function() {
         this.sprite = new PIXI.Sprite(PIXI.loader.resources["pics/helpbutton.png"].texture);
         this.sprite.x = 50;
-        this.sprite.y = 420;
+        this.sprite.y = 400;
         app.stage.addChild(this.sprite);
     }
 }
@@ -381,3 +376,14 @@ graphics.AnimalObj = function() {
 
     }
 }
+
+graphics.TextObj = function() {
+    this.text;
+
+    this.init = function(text, style, x, y) {
+        this.text = new PIXI.Text(text, style); //{ fontFamily : 'Arial', fontSize: 24, fill : 0xff1010, align : 'center' });
+        this.text.x = x;
+        this.text.y = y;
+        app.stage.addChild(this.text);
+    }
+};
