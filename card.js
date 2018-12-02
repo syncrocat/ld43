@@ -9,10 +9,19 @@ Card = function() {
     this.useAction = function() {
         switch (this.cardType) {
             case "Wolves":
-                gameBoard.addEffectTimer(new EffectTimer(2, effects.munchDeer, "munchDeer"));
+                this.gameBoard.addEffectTimer(new EffectTimer(2, effects.munchDeer, "munchDeer"));
                 break;
             case "Deer":
-                gameBoard.addEffectTimer(new EffectTimer(2, effects.matureDeer, "matureDeer"));
+                this.gameBoard.addEffectTimer(new EffectTimer(2, effects.matureDeer, "matureDeer"));
+                break;
+            case "Nuke":
+                let biome = Math.floor (Math.random * 3);
+                // Nuke animation goes here
+                effects.nukeZone(this.gameBoard, biome)
+                this.gameBoard.addEffectTimer(new EffectTimer(1, effects.nukeZone, "nukeZone", biome));
+                break;
+            case "Anaconda":
+                effects.anaconda(this.gameBoard)
                 break;
             default:
                 console.log("Wuh oh (you should not be deer)");

@@ -1,7 +1,8 @@
-EffectTimer = function(effect, duration, name) {
+EffectTimer = function(effect, duration, name, additionalParams=null) {
     this.effect = effect;
     this.remainingDuration = duration;
     this.name = name;
+    this.additionalParams = additionalParams;
 }
 
 var effects = {};
@@ -34,6 +35,38 @@ effects.matureDeer = function(gameBoard) {
     gameBoard.removeSpecies("youngDeer");
     gameBoard.addSpecies("deer");
     gameBoard.log("bambi is legal now");
+}
+
+effects.nukeZone = function(gameBoard, zone) {
+    switch (zone) {
+        case 'land' :
+            gameBoard.log("Your land animals died of radiation!")
+            gameBoard.removeSpecies("deer")
+            gameBoard.removeSpecies("wolf")
+        case 'swamp' :
+            gameBoard.log("Your swamp animals died of radiation!")
+            gameBoard.removeSpecies("bat")
+            gameBoard.removeSpecies("frog")
+        case 'water' :
+            gameBoard.log("Your water animals died of radiation!")
+            gameBoard.removeSpecies('salmon')
+            gameBoard.removeSpecies('squid')
+    }
+}
+
+effects.anaconda = function(gameBoard) {
+    let magicNumber = 5;
+    // Anaconda animation call
+    if (gameBoard.containsAnimal("bat")) {
+        gameBoard.log("An anaconda ate your bats :( +5 Stars")
+        gameBoard.removeSpecies("bat")
+        gameBoard.stars += magicNumber;
+    }
+    if (gameBoard.containsAnimal("frog")) {
+        gameBoard.log("An anaconda ate your frogs :( +5 Stars")
+        gameBoard.removeSpecies("frog")
+        gameBoard.stars += magicNumber;
+    }
 }
 
 GameBoard = function () {
@@ -107,7 +140,11 @@ GameBoard = function () {
         for (let i = 0; i < this.effectTimers.size(); i++) {
             this.effectTimers[i].remainingDuration -= 1;
             if (this.effectTimers[i].remainingDuration === 0) {
-                this.effectTimers[i].effect(this);
+                if (this.effectTimers[i].additionalParams == null) {
+                    this.effectTimers[i].effect(this);
+                } else {
+                    this.effectTimers[i].effect(this, this.effectTimeres[i].additionalParams)
+                }
             }
         }
 
