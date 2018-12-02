@@ -11,27 +11,38 @@ Card = function() {
         switch (this.cardType) {
             case "Wolf":
                 this.gameBoard.addAnimal("wolf")
-                this.gameBoard.addEffectTimer(new EffectTimer(2, effects.munchDeer, "munchDeer"));
+                this.gameBoard.addEffectTimer(new EffectTimer(3, effects.munchDeer, "munchDeer"));
                 break;
             case "Deer":
                 this.gameBoard.addAnimal("youngDeer")
-                this.gameBoard.addEffectTimer(new EffectTimer(2, effects.matureDeer, "matureDeer"));
+                this.gameBoard.addEffectTimer(new EffectTimer(3, effects.matureDeer, "matureDeer"));
                 break;
             case "Salmon":
+                this.gameBoard.addAnimal("salmon")
                 break;
             case "Squid":
+                this.gameBoard.addAnimal("squid")
                 break;
             case "Frog":
+                this.gameBoard.addAnimal("frog")
                 break;
             case "Bat":
+                this.gameBoard.addAnimal("bat")
                 break;
             case "Mosquito":
+                this.gameBoard.log("Mosquitoes nourish the creatures of the swamp!")
+                this.gameBoard.animalValues['frog'] += 1
+                this.gameBoard.animalValues['bat'] += 1
+                this.gameBoard.addEffectTimer(new EffectTimer(1, effects.mosquito, "mosquitoDeath", 3))
                 break;
             case "Tsunami":
+                effects.flood(this.gameBoard);
                 break;
             case "Drought":
+                effects.drought(this.gameBoard);
                 break;
             case "Oil":
+                effects.oil(this.gameBoard);
                 break;
             case "Toxic waste":
                 break;
@@ -126,6 +137,7 @@ Hand = function() {
         this.selectedCardPos = -1;
         this.isWaitingToDraw; // ?????
         this.gameBoard.countdown()
+        this.gameBoard.getStarsForAnimals()
     }
 
     this.swapCards = function(n, m) {

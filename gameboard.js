@@ -68,17 +68,95 @@ effects.anaconda = function(gameBoard) {
     }
 }
 
+effects.flood = function(gameBoard) {
+    if (gameBoard.terrainState == 'treeswampwater') {
+        gameBoard.terrainState = 'treewaterwater'
+        gameBoard.removeAnimal('bat', -2)
+        gameBoard.removeAnimal('frog', -2)
+    } else if (gameBoard.terrainState == 'treeswampoil') {
+        gameBoard.terrainState = 'treeoiloil'
+        gameBoard.removeAnimal('bat', -2)
+        gameBoard.removeAnimal('frog', -2)
+    } else if (gameBoard.terrainState == 'treetreewater') {
+        gameBoard.terrainState = 'treeswampwater'
+    } else if (gameBoard.terrainState == 'treetreeoil') {
+        gameBoard.terrainState = 'treeswampoil'
+    }
+    // gameBoardGraphicObj.updateTerrain()
+}
+
+effects.drought = function(gameBoard) {
+    gameBoard.log("A drought dried up the swamp!")
+    if (gameBoard.terrainState == 'treeswampwater') {
+        gameBoard.terrainState = 'treetreewater'
+        gameBoard.removeAnimal('bat', -2)
+        gameBoard.removeAnimal('frog', -2)
+    } else if (gameBoard.terrainState == 'treeswampoil') {
+        gameBoard.terrainState = 'treetreeoil'
+        gameBoard.removeAnimal('bat', -2)
+        gameBoard.removeAnimal('frog', -2)
+    } else if (gameBoard.terrainState == 'treewaterwater') {
+        gameBoard.terrainState = 'treeswampwater'
+    } else if (gameBoard.terrainState == 'treewateroil') {
+        gameBoard.terrainState = 'treeswampoil'
+    }
+    // gameBoardGraphicObj.updateTerrain()
+}
+
+effects.oil = function(gameBoard) {
+    gameBoard.log ("An oil spill occured!")
+    gameBoard.terrainState = gameBoard.terrainState.replace('water', 'oil')
+    gameBoard.removeAnimal('salmon', -2);
+    gameBoard.removeAnimal('squid', -2)
+}
+
+effects.mosquitoDeath = function(gameBoard) {
+    gameBoard.log('The mosquitoes have left the swamp.')
+    this.gameBoard.animalValues['frog'] -= 1
+    this.gameBoard.animalValues['bat'] -= 1
+}
+
 GameBoard = function () {
     this.stars;
     this.animals;
     this.effectTimers;
     this.logQueue;
+    this.terrainState;
+    this.animalValues;
 
     this.init = function() {
         this.stars = 0;
         this.animals = {};
         this.effectTimers = [];
         this.logQueue = [];
+        this.terrainState = "treeswampwater";
+
+        this.animalValues = {
+            'youngDeer' : 0,
+            'deer' : 1,
+            'wolf' : 4,
+            'salmon' : 1,
+            'squid' : 2,
+            'frog' : 2,
+            'bat' : 2
+        }
+    }
+
+    this.pluralizeAnimal = function(animal) {
+        switch (animal) {
+            case 'deer' :
+                return 'deer'
+            case 'wolf' :
+                return 'wolves'
+            case 'bat':
+                return 'bats'
+            case 'frog' :
+                return 'frogs'
+            case 'salmon':
+                return 'salmon'
+            case 'squid' :
+                return 'squid'
+        }
     }
 
     this.containsAnimal = function(animalName) {
@@ -101,13 +179,22 @@ GameBoard = function () {
         this.animals[animalName] += 1;
     }
 
-    this.removeAnimal = function(animalName) {
+    // You can attach a message to your remove animal function
+    // -1 no message, default
+    // -2 generic message
+    this.removeAnimal = function(animalName, message = -1) {
+        if (message == -2) {
+            message = 'Your ' + this.pluralizeAnimal(animalName) + ' have died!'
+        }
         if (!(animalName in this.animals)) {
             return false;
         }
 
         if (this.animals[animalName] > 0) {
             this.animals[animalName] -= 1;
+            if (message != -1) {
+                this.log(message)
+            }
             return true;
         }
 
@@ -157,5 +244,13 @@ GameBoard = function () {
         }
 
         this.effectTimers = this.effectTimers.filter(timer => timer.remainingDuration !== 0);
+    }
+
+    this.getStarsForAnimals = function() {
+        for (let animal in this.animals) {
+            let numStars = this.animalValues[animal] * this.animals[animal]
+            this.stars += numStars;
+            this.log("You gained " + numStars + " stars from your " + this.pluralizeAnimal(animal) + "!");
+        }
     }
 }
