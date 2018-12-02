@@ -6,12 +6,20 @@ graphics.CardObj = function() {
     this.interactable;
     this.card;
     this.destroyCounter;
+    this.regTexture;
+    this.hoverTexture;
+    this.selectedTexture;
+    this.isHovered;
+    this.clicking;
 
-    this.init = function(card, pos) {
+    this.init = function(card, pos, hand) {
+        this.regTexture = this.getTexture(card, 'pics/tempcard.png');
+        this.hoverTexture = this.getTexture(card, 'pics/tempcardhovered.png');
+        this.selectedTexture = this.getTexture(card, 'pics/tempcardselected.png');
+        this.sprite = this.getSprite(card);
         this.animateFrame = 0;
         this.interactable = false;
         this.position = pos;
-        this.sprite = this.getSprite(card)
         this.sprite.width = 175
         this.sprite.height = 280
         this.sprite.x = 0;
@@ -19,12 +27,19 @@ graphics.CardObj = function() {
         this.card = card;
         this.cardState = 'draw'
         this.destroyCounter = 0;
+        this.isHovered = false;
+        this.clicking = false;
+        this.hand = hand;
         app.stage.addChild(this.sprite);
     }
 
+    this.getTexture = function(card, img) {
+        console.log(img);
+        return PIXI.loader.resources[img].texture;
+    }
+
     this.getSprite = function(card) {
-        //code goes here //
-        return new PIXI.Sprite(PIXI.loader.resources['pics/tempcard.png'].texture);
+        return new PIXI.Sprite(this.regTexture);
     }
 
     this.isMousedOver = function(mouseX, mouseY) {
@@ -35,17 +50,46 @@ graphics.CardObj = function() {
     }
 
     this.onHover = function() {
+        this.isHovered = true;
+    }
+
+    this.offHover = function() {
+        this.isHovered = false;
+    }
+
+    this.onSelect = function() {
+        if (this.position === this.hand.selectedCardPos) {
+            // Deselect the card
+            this.hand.selectedCardPos = -1;
+        } else {
+            if (this.hand.selectedCardPos === -1) {
+                // Select the card
+                this.hand.selectedCardPos = this.position;
+            } else {
+                // Swap the cards
+                this.hand.swapCards(this.position, this.hand.selectedCardPos);
+                this.hand.selectedCardPos = -1;
+            }
+        }
     }
 
     this.runObject = function(mouseX,mouseY) {
         if (this.isMousedOver(mouseX,mouseY)) {
             this.onHover();
+            if (app.mouse_pressed && !this.clicking) {
+                this.clicking = true;
+                this.onSelect();
+            } else if (!app.mouse_pressed) {
+                this.clicking = false;
+            }
+        } else {
+            this.offHover();
         }
         this.animate()
     }
 
     this.animateDraw = function() {
-        this.sprite.x = 51 + (this.position * (31 + this.sprite.width))
+        this.sprite.x = 50 + (this.position * (47 + this.sprite.width))
 
         this.sprite.y = 720 - 20 - this.sprite.height;
         this.interactable = true;
@@ -53,12 +97,25 @@ graphics.CardObj = function() {
     }
 
     this.animate = function() {
+        console.log(this.hand.selectedCardPos);
         switch (this.cardState)  {
             case 'draw' :
                 this.animateDraw();
                 break;
             case 'hand' :
-                let meme = 1;
+                if (this.hand.selectedCardPos === this.position) {
+                    if (this.sprite.texture !== this.selectedTexture) {
+                        this.sprite.texture = this.selectedTexture;
+                    }
+                } else if (this.isHovered) {
+                    if (this.sprite.texture !== this.hoverTexture) {
+                        this.sprite.texture = this.hoverTexture;
+                    }
+                } else {
+                    if (this.sprite.texture !== this.regTexture) {
+                        this.sprite.texture = this.regTexture;
+                    }
+                }
                 break;
             case 'use' :
                 this.animateUse();

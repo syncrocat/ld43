@@ -13,6 +13,8 @@ app.stage.on('mouseup', app.mouseUp)
 
 PIXI.loader
 .add("pics/tempcard.png")
+.add("pics/tempcardhovered.png")
+.add("pics/tempcardselected.png")
 .add("pics/tempdeckcard.png")
 .add("pics/tempsubmit.png")
 .load(function () {
