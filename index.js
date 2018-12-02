@@ -32,7 +32,7 @@ app.setup = function () {
     let submitButton = new graphics.SubmitObj();
     hand.init(deck, saveDeck, submitButton)
     submitButton.init(hand);
-    let gameBoard = new gameBoard();
+    let gameBoard = new GameBoard();
     gameBoard.init();
 
     hand.drawCards();

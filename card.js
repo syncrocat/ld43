@@ -1,18 +1,33 @@
 Card = function() {
-    
-    this.init = function(type=-1) {
-        this.consumed = false;
+    this.gameBoard;
+
+    this.init = function(gameBoard, type=-1) {
         this.cardType = type
+        this.gameBoard = gameBoard;
     }
 
     this.useAction = function() {
-        //do something        
+        switch (this.cardType) {
+            case "Wolves":
+                gameBoard.addEffectTimer(new EffectTimer(2, effects.munchDeer, "munchDeer"));
+                break;
+            case "Deer":
+                gameBoard.addEffectTimer(new EffectTimer(2, effects.matureDeer, "matureDeer"));
+                break;
+            default:
+                console.log("Wuh oh (you should not be deer)");
+                break;
+        }
     }
 
     this.discardAction = function() {
-        //do nothing
+        switch (this.cardType) {
+            default:
+                break;
+        }
     }
 }
+
 
 Deck = function() {
 
