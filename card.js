@@ -7,12 +7,33 @@ Card = function() {
     }
 
     this.useAction = function() {
+        console.log(this.gameBoard)
         switch (this.cardType) {
-            case "Wolves":
+            case "Wolf":
+                this.gameBoard.addAnimal("wolf")
                 this.gameBoard.addEffectTimer(new EffectTimer(2, effects.munchDeer, "munchDeer"));
                 break;
             case "Deer":
+                this.gameBoard.addAnimal("youngDeer")
                 this.gameBoard.addEffectTimer(new EffectTimer(2, effects.matureDeer, "matureDeer"));
+                break;
+            case "Salmon":
+                break;
+            case "Squid":
+                break;
+            case "Frog":
+                break;
+            case "Bat":
+                break;
+            case "Mosquito":
+                break;
+            case "Tsunami":
+                break;
+            case "Drought":
+                break;
+            case "Oil":
+                break;
+            case "Toxic waste":
                 break;
             case "Nuke":
                 let biome = Math.floor (Math.random * 3);
@@ -40,11 +61,11 @@ Card = function() {
 
 Deck = function() {
 
-    this.init = function(n) {
+    this.init = function(gameBoard, n) {
         this.cards = [];
         for (i = 0; i < n; i++) {
             let card = new Card()
-            card.init(i, i % 2 == 0 ? "Wolves" : "Deer");
+            card.init(gameBoard, i % 2 == 0 ? "Wolf" : "Deer");
             this.cards.push(card);
         }
     }
@@ -80,8 +101,10 @@ Hand = function() {
     this.isWaitingToDraw;
     this.submitButton;
     this.selectedCardPos;
+    this.gameBoard;
 
-    this.init = function(deck, saveDeck, submitButton) {
+    this.init = function(gameBoard, deck, saveDeck, submitButton) {
+        this.gameBoard = gameBoard;
         this.cards = [-1, -1, -1]
         this.deck = deck;
         this.saveDeck = saveDeck;
@@ -102,6 +125,7 @@ Hand = function() {
         this.drawTimer = 50;
         this.selectedCardPos = -1;
         this.isWaitingToDraw; // ?????
+        this.gameBoard.countdown()
     }
 
     this.swapCards = function(n, m) {
