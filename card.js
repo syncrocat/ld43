@@ -9,10 +9,29 @@ Card = function() {
     this.useAction = function() {
         switch (this.cardType) {
             case "Wolves":
+                console.log(this.gameBoard)
                 this.gameBoard.addEffectTimer(new EffectTimer(2, effects.munchDeer, "munchDeer"));
                 break;
             case "Deer":
                 this.gameBoard.addEffectTimer(new EffectTimer(2, effects.matureDeer, "matureDeer"));
+                break;
+            case "Salmon":
+                break;
+            case "Squid":
+                break;
+            case "Frog":
+                break;
+            case "Bat":
+                break;
+            case "Mosquito":
+                break;
+            case "Tsunami":
+                break;
+            case "Drought":
+                break;
+            case "Oil":
+                break;
+            case "Toxic waste":
                 break;
             case "Nuke":
                 let biome = Math.floor (Math.random * 3);
@@ -40,11 +59,11 @@ Card = function() {
 
 Deck = function() {
 
-    this.init = function(n) {
+    this.init = function(gameBoard, n) {
         this.cards = [];
         for (i = 0; i < n; i++) {
             let card = new Card()
-            card.init(i, i % 2 == 0 ? "Wolves" : "Deer");
+            card.init(gameBoard, i % 2 == 0 ? "Wolves" : "Deer");
             this.cards.push(card);
         }
     }

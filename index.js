@@ -26,17 +26,17 @@ PIXI.loader
 app.setup = function () {
     app.mouse_pressed = false;
 
+    let gameBoard = new GameBoard();
+    gameBoard.init();
     let deck = new Deck()
-    deck.init(25)
+    deck.init(gameBoard, 25)
     let saveDeck = new Deck()
-    saveDeck.init(0)
+    saveDeck.init(gameBoard, 0)
     let hand = new Hand();
     let submitButton = new graphics.SubmitObj();
     hand.init(deck, saveDeck, submitButton)
     submitButton.init(hand);
-    let gameBoard = new GameBoard();
-    gameBoard.init();
-
+    
     hand.drawCards();
 
     let gameBox = {

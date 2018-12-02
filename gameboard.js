@@ -72,13 +72,13 @@ effects.anaconda = function(gameBoard) {
 GameBoard = function () {
     this.stars;
     this.animals;
-    this.effects;
+    this.effectTimers;
     this.logQueue;
 
     this.init = function() {
         this.stars = 0;
         this.animals = {};
-        this.effects = [];
+        this.effectTimers = [];
         this.logQueue = [];
     }
 
@@ -87,6 +87,7 @@ GameBoard = function () {
     }
 
     this.log = function(message) {
+        console.log(message)
         this.logQueue.unshift(message);
         if (this.logQueue.size() > 5) {
             this.logQueue.pop();
