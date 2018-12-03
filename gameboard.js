@@ -3,6 +3,7 @@ EffectTimer = function(duration, effect, name, additionalParams=null) {
     this.remainingDuration = duration;
     this.name = name;
     this.additionalParams = additionalParams;
+    //console.log(additionalParams)
 }
 
 var effects = {};
@@ -43,19 +44,23 @@ effects.matureDeer = function(gameBoard) {
 }
 
 effects.nukeZone = function(gameBoard, zone) {
+    
     switch (zone) {
-        case 'land' :
+        case 0 :
             gameBoard.log("Your land animals died of radiation!")
             gameBoard.removeSpecies("deer")
             gameBoard.removeSpecies("wolf")
-        case 'swamp' :
+            break;
+        case 1 :
             gameBoard.log("Your swamp animals died of radiation!")
             gameBoard.removeSpecies("bat")
             gameBoard.removeSpecies("frog")
-        case 'water' :
+            break;
+        case 2 :
             gameBoard.log("Your water animals died of radiation!")
             gameBoard.removeSpecies('salmon')
             gameBoard.removeSpecies('squid')
+            break;
     }
 }
 
@@ -66,11 +71,13 @@ effects.anaconda = function(gameBoard) {
         gameBoard.log("An anaconda ate your bats :( +5 Stars")
         gameBoard.removeSpecies("bat")
         gameBoard.stars += magicNumber;
+        gameBoard.starsTextObj.text.text = gameBoard.stars;
     }
     if (gameBoard.containsAnimal("frog")) {
         gameBoard.log("An anaconda ate your frogs :( +5 Stars")
         gameBoard.removeSpecies("frog")
         gameBoard.stars += magicNumber;
+        gameBoard.starsTextObj.text.text = gameBoard.stars;
     }
 }
 
@@ -119,10 +126,41 @@ effects.oil = function(gameBoard) {
     gameBoard.updateTerrain();
 }
 
-effects.mosquitoDeath = function(gameBoard) {
-    gameBoard.log('The mosquitoes have left the swamp.')
-    this.gameBoard.animalValues['frog'] -= 1
-    this.gameBoard.animalValues['bat'] -= 1
+effects.bugDeath = function(gameBoard, n) {
+    if (n == 0) {
+        gameBoard.log('The bugs have left the swamp.')
+        gameBoard.animalValues['frog'] -= 1
+        gameBoard.animalValues['bat'] -= 1
+        app.stage.removeChild(gameBoard.bugman.sprite)
+        gameBoard.bugman = -1;
+    } else {
+        gameBoard.addEffectTimer(new EffectTimer(1, effects.bugDeath, "bugDeath", n-1))
+        
+
+    }
+}
+
+effects.harvest = function(gameBoard) {
+    let magicNumber = 3
+    let starCount = 0;
+    // Anaconda animation call
+    for (animal in gameBoard.animals) {
+        starCount += gameBoard.animals[animal] * 3;
+        gameBoard.removeSpecies(animal)
+        
+    }
+    gameBoard.log("All animals were harvested for " + starCount + " stars.")
+    gameBoard.stars += starCount
+    gameBoard.starsTextObj.text.text = gameBoard.stars;
+}
+
+effects.fungus = function(gameBoard) {
+    let magicNumber = 3
+    let starCount = 2 * gameBoard.deadAnimalNum
+
+    gameBoard.log("Dead animals rewarded " + starCount + " stars.")
+    gameBoard.stars += starCount
+    gameBoard.starsTextObj.text.text = gameBoard.stars;
 }
 
 GameBoard = function () {
@@ -134,9 +172,12 @@ GameBoard = function () {
     this.terrainState;
     this.animalValues;
     this.logTextObj;
+
     this.starsTextObj;
     this.world;
     this.worldTextures;
+    this.deadAnimalNum = 0;
+    this.bugman = -1;
 
 
     this.init = function(world) {
@@ -150,6 +191,7 @@ GameBoard = function () {
             "treetreeoil": PIXI.loader.resources["pics/treetreeoil.png"].texture,
             "treeoiloil": PIXI.loader.resources["pics/treeoiloil.png"].texture,
         };
+
         this.stars = 0;
         this.animals = {};
         this.effectTimers = [];
@@ -222,7 +264,9 @@ GameBoard = function () {
         this.animals[animalName] += 1;
         let newAnimal = new graphics.AnimalObj();
         newAnimal.init(animalName,this, babyDeerSlot)
+        console.log("pushing new animal", newAnimal)
         this.animalObjects.push(newAnimal);
+        console.log(this.animalObjects);
 
     }
 
@@ -230,10 +274,12 @@ GameBoard = function () {
     // -1 no message, default
     // -2 generic message
     this.removeAnimal = function(animalName, message = -1) {
+        this.deadAnimalNum += 1
         if (message == -2) {
             message = 'Your ' + this.pluralizeAnimal(animalName) + ' have died!'
         }
         if (!(animalName in this.animals)) {
+            console.log("THERE WAS NO ANIMAL FOUND", animalName)
             return -1;
         }
 
@@ -243,15 +289,26 @@ GameBoard = function () {
                 this.log(message)
             }
             
+            let index = -1;
             //console.log(this.animalObjects)
+            for (let i = 0; i < this.animalObjects.length; i++) {
+                if (this.animalObjects[i].trueAnimalName == animalName) {
+                    index = i;
+                    break;
+                }
+            }
             let toKill = this.animalObjects.filter(obj => obj.trueAnimalName === animalName);
             //console.log(toKill)
+            if (toKill.length > 0)
             babyDeerSlot = toKill[0].killme();
+            this.animalObjects = this.animalObjects.splice(index, 1)
             if (babyDeerSlot !== false) {
                 return babyDeerSlot
             }
             return -1;
         }
+
+        console.log("THERE WAS NO ANIMAL FOUND", animalName)
 
         return -1;
     }
@@ -271,11 +328,20 @@ GameBoard = function () {
     }
 
     this.removeSpecies = function(animalName) {
+        numOf = this.animals[animalName]
+        for (let i = 0; i < numOf; i ++) {
+            this.removeAnimal(animalName)
+        }
+
         this.animals[animalName] = 0;
+        /*let indexes = [];
+        //console.log(this.animalObjects)
+
         let toKill = this.animalObjects.filter(obj => obj.trueAnimalName === animalName);
         for (let i= 0; i < toKill.length; i++) {
             toKill[i].killme();
         }
+        this.animalObjects = this.animalObjects.splice(index, 1)*/
     }
 
     this.removeEffect = function(effectName) {
@@ -285,6 +351,9 @@ GameBoard = function () {
     this.runObjects = function() {
         for (let i = 0; i < this.animalObjects.length; i++) {
             this.animalObjects[i].runObject();
+        }
+        if (this.bugman != -1) {
+            this.bugman.runObject();
         }
     }
 
@@ -304,7 +373,8 @@ GameBoard = function () {
             if (effectTimersToExecute[i].additionalParams == null) {
                 effectTimersToExecute[i].effect(this);
             } else {
-                effectTimersToExecute[i].effect(this, this.effectTimersToExecute[i].additionalParams)
+                console.log(effectTimersToExecute[i].additionalParams)
+                effectTimersToExecute[i].effect(this, effectTimersToExecute[i].additionalParams)
             }
         }
 
@@ -312,14 +382,17 @@ GameBoard = function () {
 
 
         console.log(this.animals)
+        console.log(this.animalObjects)
     }
 
     this.getStarsForAnimals = function() {
         for (let animal in this.animals) {
-            let numStars = this.animalValues[animal] * this.animals[animal]
-            this.stars += numStars;
-            this.starsTextObj.text.text = this.stars;
-            this.log("You gained " + numStars + " stars from your " + this.pluralizeAnimal(animal) + "!");
+            if (this.animals[animal] > 0) {
+                let numStars = this.animalValues[animal] * this.animals[animal]
+                this.stars += numStars;
+                this.starsTextObj.text.text = this.stars;
+                this.log("You gained " + numStars + " stars from your " + this.pluralizeAnimal(animal) + "!");
+            }
         }
     }
 }

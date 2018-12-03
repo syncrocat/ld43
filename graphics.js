@@ -32,14 +32,8 @@ graphics.CardObj = function() {
     }
 
     this.getRegTexture = function(card) {
-        switch (card.cardType) {
-            case "Wolf":
-                return PIXI.loader.resources["pics/wolfcard.png"].texture;
-            case "Deer":
-                return PIXI.loader.resources["pics/deercard.png"].texture;
-            default:
-                return PIXI.loader.resources["pics/tempcard.png"].texture;
-        }
+        console.log('pics/cards/' + card.cardType + 'card.png')
+        return PIXI.loader.resources['pics/cards/' + card.cardType + 'card.png'].texture;
     }
 
     this.getHoverTexture = function(card) {
@@ -445,13 +439,13 @@ graphics.AnimalObj = function() {
             if (this.babyDeerSlot == 1) {
                 this.deerSlot = 1;
                 this.sprite.x = 367 +24
-                this.sprite.y = 289 +8
+                this.sprite.y = 289 +8 - 20
                 this.headUpTimer = 100;
                 this.headDownTimer = 100;
             } else if (this.babyDeerSlot == 2) {
                 this.deerSlot = 2;
                 this.sprite.x = 461 
-                this.sprite.y = 240
+                this.sprite.y = 240- 20
                 this.sprite.scale.x = -1;
                 this.headUpTimer = 200;
                 this.headDownTimer = 50;
@@ -459,7 +453,7 @@ graphics.AnimalObj = function() {
             } else {
                 this.deerSlot = 3;
                 this.sprite.x = 229 
-                this.sprite.y = 314
+                this.sprite.y = 314- 20
                 this.sprite.scale.x = -1
                 this.headUpTimer = 150;
                 this.headDownTimer = 75;
@@ -484,7 +478,7 @@ graphics.AnimalObj = function() {
         }
         if (this.animalName == 'frog') {
             this.sprite.x = 206
-            this.sprite.y = 280
+            this.sprite.y = 280-20
         }
         if (this.animalName == 'bat') {
             this.animationState = 1;
@@ -622,6 +616,7 @@ graphics.TextObj = function() {
     }
 };
 
+
 graphics.StarObj = function() {
     this.sprite;
 
@@ -632,3 +627,29 @@ graphics.StarObj = function() {
         app.stage.addChild(this.sprite);
     }
 }
+
+graphics.BugObj = function() {
+    this.frame1 = PIXI.loader.resources["pics/animals/bug1.png"].texture;
+    this.frame2 = PIXI.loader.resources["pics/animals/bug2.png"].texture;
+    this.frame3 = PIXI.loader.resources["pics/animals/bug3.png"].texture;
+
+    this.sprite = new PIXI.Sprite(this.frame1)
+    this.sprite.x = 170
+    this.sprite.y = 275
+    this.sprite.anchor.set(0.5)
+    this.frame = 0;
+    app.stage.addChild(this.sprite)
+
+    this.runObject = function() {
+        this.frame += 1
+        if (this.frame == 0) {
+            this.sprite.texture = this.frame1
+        } else if (this.frame == 10) {
+            this.sprite.texture = this.frame2
+        } else if (this.frame == 20) {
+            this.sprite.texture = this.frame3
+            this.frame = -10
+        }
+    }   
+}
+

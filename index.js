@@ -15,8 +15,21 @@ PIXI.loader
 .add("pics/tempcard.png")
 .add("pics/tempcardhovered.png")
 .add("pics/tempcardselected.png")
-.add("pics/wolfcard.png")
-.add("pics/deercard.png")
+.add("pics/cards/oilspillcard.png")
+.add("pics/cards/floodcard.png")
+.add("pics/cards/droughtcard.png")
+.add("pics/cards/wolfcard.png")
+.add("pics/cards/deercard.png")
+.add("pics/cards/squidcard.png")
+.add("pics/cards/salmoncard.png")
+.add("pics/cards/anacondacard.png")
+.add("pics/cards/bugcard.png")
+.add("pics/cards/nukecard.png")
+.add("pics/cards/batcard.png")
+.add("pics/cards/harvestcard.png")
+.add("pics/cards/funguscard.png")
+.add("pics/cards/frogcard.png")
+.add("pics/cards/sevencard.png")
 .add("pics/deck.png")
 .add("pics/commitbutton.png")
 .add("pics/helpbutton.png")
@@ -42,6 +55,9 @@ PIXI.loader
 .add("pics/animals/wolf1.png")
 .add("pics/animals/wolf2.png")
 .add("pics/animals/wolf3.png")
+.add("pics/animals/bug1.png")
+.add("pics/animals/bug2.png")
+.add("pics/animals/bug3.png")
 .add("pics/animals/squid1.png")
 .add("pics/animals/squid2.png")
 .add("pics/skull.png")
@@ -73,7 +89,7 @@ app.setup = function () {
     let submitButton = new graphics.SubmitObj();
     hand.init(gameBoard, deck, saveDeck, submitButton);
     submitButton.init(hand);
-    
+    //let killme = new graphics.BugObj();
     
     let cardBackgrounds = [];
     for (let i = 0; i < 3; i++) {
@@ -122,6 +138,7 @@ app.gameLoop = function (gameBox) {
     gameBox.hand.runCards(mouseX,mouseY);
     gameBox.submit.runObject(mouseX,mouseY);
     gameBox.gameBoard.runObjects();
+    //gameBox.bugs.runObject()
     //gameBox.test.runObject();
     for (let i = 0; i < app.deadObjects.length; i++) {
         deadObjects[i].runObject();
