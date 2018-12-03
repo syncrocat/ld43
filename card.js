@@ -21,16 +21,39 @@ Card = function() {
                 //this.gameBoard.addEffectTimer(new EffectTimer(3, effects.matureDeer, "matureDeer"));
                 break;
             case "salmon":
-                this.gameBoard.addAnimal("salmon")
+                if (this.gameBoard.terrainState.includes('oil')) {
+                    this.gameBoard.log("Salmon died immediately due to oil!")
+                    this.gameBoard.deadAnimalNum += 1
+                } else {
+                    this.gameBoard.addAnimal("salmon")
+                }
                 break;
             case "squid":
-                this.gameBoard.addAnimal("squid")
+                if (this.gameBoard.terrainState.includes('oil')) {
+                    this.gameBoard.log("Squid died immediately due to oil!")
+                    this.gameBoard.deadAnimalNum += 1
+                } else {
+                    this.gameBoard.addAnimal("squid")
+                }
                 break;
             case "frog":
-                this.gameBoard.addAnimal("frog")
+                if (this.gameBoard.terrainState.includes('oil') && !this.gameBoard.terrainState.includes('swamp')) {
+                    this.gameBoard.log("Frog died immediately due to oil bad!")
+                    this.gameBoard.deadAnimalNum += 1
+                } else if (this.gameBoard.terrainState == 'treetreewater') {
+                    this.gameBoard.log("Frog died immediately due to insufficient terrain!")
+                    this.gameBoard.deadAnimalNum += 1
+                } else {
+                    this.gameBoard.addAnimal("frog")
+                }
                 break;
             case "bat":
-                this.gameBoard.addAnimal("bat")
+                if (this.gameBoard.terrainState.includes('waterwater')) {
+                    this.gameBoard.log("Bat died immediately due to insufficient terrain!")
+                    this.gameBoard.deadAnimalNum += 1
+                } else {
+                    this.gameBoard.addAnimal("bat")
+                }
                 break;
             case "bug":
                 this.gameBoard.bugman = new graphics.BugObj();
