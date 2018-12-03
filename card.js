@@ -9,54 +9,62 @@ Card = function() {
     this.useAction = function() {
         //console.log(this.gameBoard)
         switch (this.cardType) {
-            case "Wolf":
+            case "wolf":
                 this.gameBoard.removeSpecies("wolf")
                 this.gameBoard.effectTimers = this.gameBoard.effectTimers.filter(f => f.name != 'munchDeer')
 
                 this.gameBoard.addAnimal("wolf")
                 this.gameBoard.addEffectTimer(new EffectTimer(3, effects.munchDeer, "munchDeer"));
                 break;
-            case "Deer":
+            case "deer":
                 this.gameBoard.addAnimal("youngDeer")
                 this.gameBoard.addEffectTimer(new EffectTimer(3, effects.matureDeer, "matureDeer"));
                 break;
-            case "Salmon":
+            case "salmon":
                 this.gameBoard.addAnimal("salmon")
                 break;
-            case "Squid":
+            case "squid":
                 this.gameBoard.addAnimal("squid")
                 break;
-            case "Frog":
+            case "frog":
                 this.gameBoard.addAnimal("frog")
                 break;
-            case "Bat":
+            case "bat":
                 this.gameBoard.addAnimal("bat")
                 break;
-            case "Mosquito":
-                this.gameBoard.log("Mosquitoes nourish the creatures of the swamp!")
+            case "bug":
+                this.gameBoard.bugman = new graphics.BugObj();
+                this.gameBoard.log("Bugs nourish the creatures of the swamp!")
                 this.gameBoard.animalValues['frog'] += 1
                 this.gameBoard.animalValues['bat'] += 1
-                this.gameBoard.addEffectTimer(new EffectTimer(1, effects.mosquito, "mosquitoDeath", 3))
+                this.gameBoard.addEffectTimer(new EffectTimer(1, effects.bugDeath, "bugDeath", 3))
                 break;
-            case "Tsunami":
+            case "flood":
                 effects.flood(this.gameBoard);
                 break;
-            case "Drought":
+            case "drought":
                 effects.drought(this.gameBoard);
                 break;
-            case "Oil":
+            case "oilspill":
                 effects.oil(this.gameBoard);
                 break;
-            case "Toxic waste":
+            case "fungus":
+                effects.fungus(this.gameBoard)
                 break;
-            case "Nuke":
+            case "nuke":
                 let biome = Math.floor (Math.random * 3);
                 // Nuke animation goes here
                 effects.nukeZone(this.gameBoard, biome)
                 this.gameBoard.addEffectTimer(new EffectTimer(1, effects.nukeZone, "nukeZone", biome));
                 break;
-            case "Anaconda":
+            case "anaconda":
                 effects.anaconda(this.gameBoard)
+                break;
+            case "harvest":
+                effects.harvest(this.gameBoard)
+                break;
+            case "seven":
+                this.gameBoard.log("You played the seven of diamonds!")
                 break;
             default:
                 ///console.log("Wuh oh (you should not be deer)");
@@ -83,7 +91,7 @@ Deck = function() {
         this.cards = [];
         for (i = 0; i < n; i++) {
             let card = new Card()
-            card.init(gameBoard, i % 2 == 0 ? "Wolf" : "Deer");
+            card.init(gameBoard, i % 2 == 0 ? "wolf" : "fungus");
             this.cards.push(card);
         }
 

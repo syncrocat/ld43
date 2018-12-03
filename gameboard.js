@@ -3,6 +3,7 @@ EffectTimer = function(duration, effect, name, additionalParams=null) {
     this.remainingDuration = duration;
     this.name = name;
     this.additionalParams = additionalParams;
+    //console.log(additionalParams)
 }
 
 var effects = {};
@@ -116,10 +117,39 @@ effects.oil = function(gameBoard) {
     gameBoard.removeAnimal('squid', -2)
 }
 
-effects.mosquitoDeath = function(gameBoard) {
-    gameBoard.log('The mosquitoes have left the swamp.')
-    this.gameBoard.animalValues['frog'] -= 1
-    this.gameBoard.animalValues['bat'] -= 1
+effects.bugDeath = function(gameBoard, n) {
+    if (n == 0) {
+        gameBoard.log('The bugs have left the swamp.')
+        gameBoard.animalValues['frog'] -= 1
+        gameBoard.animalValues['bat'] -= 1
+        app.stage.removeChild(gameBoard.bugman.sprite)
+        gameBoard.bugman = -1;
+    } else {
+        gameBoard.addEffectTimer(new EffectTimer(1, effects.bugDeath, "bugDeath", n-1))
+        
+
+    }
+}
+
+effects.harvest = function(gameBoard) {
+    let magicNumber = 3
+    let starCount = 0;
+    // Anaconda animation call
+    for (animal in gameBoard.animals) {
+        starCount += gameBoard.animals[animal] * 3;
+        gameBoard.removeSpecies(animal)
+        
+    }
+    gameBoard.log("All animals were harvested for " + starCount + " stars.")
+    gameBoard.stars += starCount
+}
+
+effects.fungus = function(gameBoard) {
+    let magicNumber = 3
+    let starCount = 2 * gameBoard.deadAnimalNum
+
+    gameBoard.log("Dead animals rewarded " + starCount + " stars.")
+    gameBoard.stars += starCount
 }
 
 GameBoard = function () {
@@ -131,6 +161,8 @@ GameBoard = function () {
     this.terrainState;
     this.animalValues;
     this.logTextObj;
+    this.deadAnimalNum = 0;
+    this.bugman = -1;
 
     this.init = function() {
         this.stars = 0;
@@ -204,6 +236,7 @@ GameBoard = function () {
     // -1 no message, default
     // -2 generic message
     this.removeAnimal = function(animalName, message = -1) {
+        gameBoard.deadAnimalNum += 1
         if (message == -2) {
             message = 'Your ' + this.pluralizeAnimal(animalName) + ' have died!'
         }
@@ -217,10 +250,17 @@ GameBoard = function () {
                 this.log(message)
             }
             
+            let index = -1;
             //console.log(this.animalObjects)
+            for (let i = 0; i < this.animalObjects.length; i++) {
+                if (this.animalObjects[i].trueAnimalName == animalName) {
+                    index = i;
+                }
+            }
             let toKill = this.animalObjects.filter(obj => obj.trueAnimalName === animalName);
             //console.log(toKill)
             babyDeerSlot = toKill[0].killme();
+            this.animalObjects = this.animalObjects.splice(index, 1)
             if (babyDeerSlot !== false) {
                 return babyDeerSlot
             }
@@ -245,11 +285,20 @@ GameBoard = function () {
     }
 
     this.removeSpecies = function(animalName) {
+        numOf = this.animals[animalName]
+        for (let i = 0; i < numOf; i ++) {
+            this.removeAnimal(animalName)
+        }
+
         this.animals[animalName] = 0;
+        /*let indexes = [];
+        //console.log(this.animalObjects)
+
         let toKill = this.animalObjects.filter(obj => obj.trueAnimalName === animalName);
         for (let i= 0; i < toKill.length; i++) {
             toKill[i].killme();
         }
+        this.animalObjects = this.animalObjects.splice(index, 1)*/
     }
 
     this.removeEffect = function(effectName) {
@@ -259,6 +308,9 @@ GameBoard = function () {
     this.runObjects = function() {
         for (let i = 0; i < this.animalObjects.length; i++) {
             this.animalObjects[i].runObject();
+        }
+        if (this.bugman != -1) {
+            this.bugman.runObject();
         }
     }
 
@@ -278,7 +330,8 @@ GameBoard = function () {
             if (effectTimersToExecute[i].additionalParams == null) {
                 effectTimersToExecute[i].effect(this);
             } else {
-                effectTimersToExecute[i].effect(this, this.effectTimersToExecute[i].additionalParams)
+                console.log(effectTimersToExecute[i].additionalParams)
+                effectTimersToExecute[i].effect(this, effectTimersToExecute[i].additionalParams)
             }
         }
 

@@ -32,14 +32,8 @@ graphics.CardObj = function() {
     }
 
     this.getRegTexture = function(card) {
-        switch (card.cardType) {
-            case "Wolf":
-                return PIXI.loader.resources["pics/wolfcard.png"].texture;
-            case "Deer":
-                return PIXI.loader.resources["pics/deercard.png"].texture;
-            default:
-                return PIXI.loader.resources["pics/tempcard.png"].texture;
-        }
+        console.log('pics/cards/' + card.cardType + 'card.png')
+        return PIXI.loader.resources['pics/cards/' + card.cardType + 'card.png'].texture;
     }
 
     this.getHoverTexture = function(card) {
@@ -621,3 +615,28 @@ graphics.TextObj = function() {
         app.stage.addChild(this.text);
     }
 };
+
+graphics.BugObj = function() {
+    this.frame1 = PIXI.loader.resources["pics/animals/bug1.png"].texture;
+    this.frame2 = PIXI.loader.resources["pics/animals/bug2.png"].texture;
+    this.frame3 = PIXI.loader.resources["pics/animals/bug3.png"].texture;
+
+    this.sprite = new PIXI.Sprite(this.frame1)
+    this.sprite.x = 170
+    this.sprite.y = 275
+    this.sprite.anchor.set(0.5)
+    this.frame = 0;
+    app.stage.addChild(this.sprite)
+
+    this.runObject = function() {
+        this.frame += 1
+        if (this.frame == 0) {
+            this.sprite.texture = this.frame1
+        } else if (this.frame == 10) {
+            this.sprite.texture = this.frame2
+        } else if (this.frame == 20) {
+            this.sprite.texture = this.frame3
+            this.frame = -10
+        }
+    }   
+}
