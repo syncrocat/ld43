@@ -257,6 +257,11 @@ Hand = function() {
                     this.deck.updateCardText();
                 } else {
                     console.log("Game is over!!!!");
+                    let endGameScreen = PIXI.Sprite(PIXI.loader.resources["pics/background.png"].texture);
+                    endGameScreen.x = 0;
+                    endGameScreen.y = 0;
+                    console.log(endGameScreen);
+                    app.stage.addChild(endGameScreen);
                 }
             }
 

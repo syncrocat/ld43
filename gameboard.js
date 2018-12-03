@@ -328,7 +328,7 @@ GameBoard = function () {
     }
 
     this.removeSpecies = function(animalName) {
-        numOf = this.animals[animalName]
+        let numOf = this.animals[animalName]
         for (let i = 0; i < numOf; i ++) {
             this.removeAnimal(animalName)
         }
