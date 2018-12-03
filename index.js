@@ -44,6 +44,7 @@ PIXI.loader
 .add("pics/animals/wolf3.png")
 .add("pics/animals/squid1.png")
 .add("pics/animals/squid2.png")
+.add("pics/skull.png")
 .load(function () {
     app.setup();
 });
@@ -86,33 +87,6 @@ app.setup = function () {
 
     let helpButton = new graphics.HelpButtonObj();
     helpButton.init();
-
-    let test = new graphics.AnimalObj();
-    test.init('salmon', gameBoard);
-    let testDeer = new graphics.AnimalObj();
-    testDeer.init('squid',gameBoard)
-    let testDeer2 = new graphics.AnimalObj();
-    testDeer2.init('bat',gameBoard)
-    let testDeer3 = new graphics.AnimalObj();
-    testDeer3.init('wolf',gameBoard)
-    let m = new graphics.AnimalObj();
-    m.init('frog',gameBoard)
-    let mm = new graphics.AnimalObj();
-    mm.init('deer',gameBoard)
-    let mmm = new graphics.AnimalObj();
-    mmm.init('deer',gameBoard)
-    let mmmm = new graphics.AnimalObj();
-    mmmm.init('deer',gameBoard)
-    let animals = []
-    animals.push(test)
-    animals.push(testDeer)
-    animals.push(testDeer2)
-    animals.push(testDeer3)
-    animals.push(m)
-    animals.push(mm)
-    animals.push(mmm)
-    animals.push(mmmm)
-
     
     hand.drawCards();
 
@@ -123,11 +97,12 @@ app.setup = function () {
         hand:hand,
         submit:submitButton,
         gameBoard:gameBoard,
-        animals:animals
     };
     // Start the game loop
     app.gameLoop(gameBox);
 }
+
+app.deadObjects = [];
 
 app.gameLoop = function (gameBox) {
     // Comment
@@ -142,10 +117,11 @@ app.gameLoop = function (gameBox) {
     // 
     gameBox.hand.runCards(mouseX,mouseY);
     gameBox.submit.runObject(mouseX,mouseY);
-    for (let animal in gameBox.animals) {
-        gameBox.animals[animal].runObject();
-    }
+    gameBox.gameBoard.runObjects();
     //gameBox.test.runObject();
+    for (let i = 0; i < app.deadObjects.length; i++) {
+        deadObjects[i].runObject();
+    }
 
     app.mouse_held = app.mouse_pressed;
 

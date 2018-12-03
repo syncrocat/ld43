@@ -7,14 +7,19 @@ EffectTimer = function(duration, effect, name, additionalParams=null) {
 
 var effects = {};
 effects.munchDeer = function(gameBoard) {
+    console.log("MUNCH EVENT")
     if (gameBoard.containsAnimal("deer")) {
+        console.log("One adult dear eaten. Expect adult removed.")
+
         gameBoard.removeAnimal("deer");
         gameBoard.addEffectTimer(new EffectTimer(2, effects.munchDeer, "munchDeer"));
         gameBoard.log("Wolf ate deer v nice +2 to big starve");
+        
         return;
     }
 
     if (gameBoard.containsAnimal("youngDeer")) {
+        console.log("One baby dear eaten. Expect adult removed.")
         gameBoard.removeAnimal("youngDeer");
         // halftime
         gameBoard.addEffectTimer(new EffectTimer(1, effects.munchDeer, "munchDeer"));
@@ -27,12 +32,13 @@ effects.munchDeer = function(gameBoard) {
 }
 
 effects.matureDeer = function(gameBoard) {
+    console.log("Deer is now maturing. Expected = 1 baby remove, 1 adult insert")
     if (!gameBoard.containsAnimal("youngDeer")) {
-        console.log("FUCK FUCK FUCK");
+        //console.log("FUCK FUCK FUCK");
     }
 
-    gameBoard.removeSpecies("youngDeer");
-    gameBoard.addAnimal("deer");
+    let babyDeerSlot = gameBoard.removeAnimal("youngDeer");
+    gameBoard.addAnimal("deer", babyDeerSlot);
     gameBoard.log("bambi is legal now");
 }
 
@@ -119,6 +125,7 @@ effects.mosquitoDeath = function(gameBoard) {
 GameBoard = function () {
     this.stars;
     this.animals;
+    this.animalObjects;
     this.effectTimers;
     this.logQueue;
     this.terrainState;
@@ -133,6 +140,7 @@ GameBoard = function () {
         this.terrainState = "treeswampwater";
         this.logTextObj = new graphics.TextObj();
         this.logTextObj.init("", {fontSize: 12, align:"left"}, 25, 25);
+        this.animalObjects = [];
 
         this.animalValues = {
             'youngDeer' : 0,
@@ -167,8 +175,8 @@ GameBoard = function () {
     }
 
     this.log = function(message) {
-        console.log(message)
-        console.log(this.logTextObj.text.text);
+        //console.log(message)
+        //console.log(this.logTextObj.text.text);
         this.logQueue.unshift(message);
         if (this.logQueue.length > 5) {
             this.logQueue.pop();
@@ -180,12 +188,16 @@ GameBoard = function () {
         }
     }
 
-    this.addAnimal = function(animalName) {
+    this.addAnimal = function(animalName, babyDeerSlot = -1) {
         if (!(animalName in this.animals)) {
             this.animals[animalName] = 0;
         }
 
         this.animals[animalName] += 1;
+        let newAnimal = new graphics.AnimalObj();
+        newAnimal.init(animalName,this, babyDeerSlot)
+        this.animalObjects.push(newAnimal);
+
     }
 
     // You can attach a message to your remove animal function
@@ -196,7 +208,7 @@ GameBoard = function () {
             message = 'Your ' + this.pluralizeAnimal(animalName) + ' have died!'
         }
         if (!(animalName in this.animals)) {
-            return false;
+            return -1;
         }
 
         if (this.animals[animalName] > 0) {
@@ -204,10 +216,18 @@ GameBoard = function () {
             if (message != -1) {
                 this.log(message)
             }
-            return true;
+            
+            //console.log(this.animalObjects)
+            let toKill = this.animalObjects.filter(obj => obj.trueAnimalName === animalName);
+            //console.log(toKill)
+            babyDeerSlot = toKill[0].killme();
+            if (babyDeerSlot !== false) {
+                return babyDeerSlot
+            }
+            return -1;
         }
 
-        return false;
+        return -1;
     }
 
     this.indexOfEffect = function(effectName) {
@@ -226,20 +246,30 @@ GameBoard = function () {
 
     this.removeSpecies = function(animalName) {
         this.animals[animalName] = 0;
+        let toKill = this.animalObjects.filter(obj => obj.trueAnimalName === animalName);
+        for (let i= 0; i < toKill.length; i++) {
+            toKill[i].killme();
+        }
     }
 
     this.removeEffect = function(effectName) {
         this.effectTimers = this.effectTimers.filter(effectTimer => effectTimer.name !== effectName);
     }
 
+    this.runObjects = function() {
+        for (let i = 0; i < this.animalObjects.length; i++) {
+            this.animalObjects[i].runObject();
+        }
+    }
+
     this.countdown = function() {   
         let effectTimersToExecute = []
         // Figure out which effect timers to execute
         for (let i = 0; i < this.effectTimers.length; i++) {
-            console.log(this.effectTimers[i].remainingDuration)
+            //console.log(this.effectTimers[i].remainingDuration)
             this.effectTimers[i].remainingDuration -= 1;
             if (this.effectTimers[i].remainingDuration === 0) {
-                console.log("Im supposed to be making an effect right now")
+                //console.log("Im supposed to be making an effect right now")
                 effectTimersToExecute.push(this.effectTimers[i])
             }
         }
@@ -253,6 +283,9 @@ GameBoard = function () {
         }
 
         this.effectTimers = this.effectTimers.filter(timer => timer.remainingDuration !== 0);
+
+
+        console.log(this.animals)
     }
 
     this.getStarsForAnimals = function() {

@@ -7,9 +7,12 @@ Card = function() {
     }
 
     this.useAction = function() {
-        console.log(this.gameBoard)
+        //console.log(this.gameBoard)
         switch (this.cardType) {
             case "Wolf":
+                this.gameBoard.removeSpecies("wolf")
+                this.gameBoard.effectTimers = this.gameBoard.effectTimers.filter(f => f.name != 'munchDeer')
+
                 this.gameBoard.addAnimal("wolf")
                 this.gameBoard.addEffectTimer(new EffectTimer(3, effects.munchDeer, "munchDeer"));
                 break;
@@ -56,7 +59,7 @@ Card = function() {
                 effects.anaconda(this.gameBoard)
                 break;
             default:
-                console.log("Wuh oh (you should not be deer)");
+                ///console.log("Wuh oh (you should not be deer)");
                 break;
         }
     }
@@ -173,8 +176,8 @@ Hand = function() {
 
     this.drawCards = function() {
         for (let i = 0; i < 3; i++) {
-            console.log("Made it here");
-            console.log(this.deck);
+            //console.log("Made it here");
+            //console.log(this.deck);
             let card = this.deck.drawCard();
             this.cards[i] = new graphics.CardObj()
             this.cards[i].init(card, i, this)

@@ -71,7 +71,7 @@ graphics.CardObj = function() {
 
     this.onSelect = function() {
         if (this.position === this.hand.selectedCardPos) {
-            console.log(";)");
+            //console.log(";)");
             // Deselect the card
             this.hand.selectedCardPos = -1;
         } else {
@@ -92,7 +92,7 @@ graphics.CardObj = function() {
             this.onHover();
             if (app.mouse_pressed && !app.mouse_held) {
                 app.mouse_held = true;
-                console.log("SELECTING CARD", this.position, ohno);
+                //console.log("SELECTING CARD", this.position, ohno);
                 this.onSelect();
             }
         } else {
@@ -290,9 +290,29 @@ graphics.BackgroundObj = function() {
 }
 
 app.numDeer = 0;
+app.slotTaken = [false, false, false];
+
+
+graphics.deadObj = function(x,y) {
+    this.sprite = new PIXI.Sprite(PIXI.loader.resources["pics/skull.png"].texture);
+    this.sprite.x = x;
+    this.sprite.y = y;
+    this.sprite.anchor = 0.5;
+    this.timer = 0;
+    app.stage.addChild(this.sprite)
+    this.runObject = function() {
+        this.sprite.y -= 2;
+        this.timer += 1;
+        if (this.timer > 40) {
+            app.stage.removeChild(this.sprite)
+        }
+    }
+}
 
 graphics.AnimalObj = function() {
+    this.deerSlot;
     this.speed;
+    this.trueAnimalName;
     this.animalName;
     this.gameBoard;
     this.textures;
@@ -305,11 +325,40 @@ graphics.AnimalObj = function() {
     this.numFish;
     this.xPointLeft;
     this.xPointRight;
+    this.babyDeerSlot;
     this.speeds;
     this.frame;
 
-    this.init = function(animalName, gameBoard) {
+    this.killme = function() {
+
+        if (this.animalName == 'salmon') {
+            for (let i = 0; i < this.fishNum; i++) {
+                app.stage.removeChild(this.sprites[i]);
+            }
+        } else {
+            //console.log('sos')
+            app.stage.removeChild(this.sprite);
+            if (this.animalName == 'deer') {
+                app.slotTaken[this.deerSlot] = false;
+                console.log("Destroying animal at deerslot: " + this.deerSlot)
+                if (this.trueAnimalName == 'youngDeer')  {
+                    console.log("And its a babydeer so passing it back boys")
+                    return this.deerSlot
+                }
+            }
+        }
+        return true;
+
+    }
+
+    this.init = function(animalName, gameBoard, babyDeerSlot) {
+        this.trueAnimalName = animalName
+        if (animalName == 'youngDeer') animalName = 'deer';
         this.speed = 0.5;
+        this.babyDeerSlot = babyDeerSlot
+        if (animalName == 'deer') console.log ("New animal created with babydeerslot " + babyDeerSlot)
+
+        
         
 
         this.animalName = animalName;
@@ -326,7 +375,7 @@ graphics.AnimalObj = function() {
         if (animalName == 'frog') numTexts = 1;
         for (let i = 1; i < numTexts + 1; i++) {
             let imgName = "pics/animals/" + animalName + i + '.png';
-            console.log(imgName)
+            //console.log(imgName)
             this.textures.push(this.loadTexture(imgName))
         };
         
@@ -360,31 +409,47 @@ graphics.AnimalObj = function() {
                 this.xPointLeft[i] = 345 - bigMOOD
                 this.xPointRight[i] = 590 - bigMOOD * (6/11)
                 this.speeds[i] = 0.3 + Math.random() * 0.4 - 0.2
-                console.log(this.sprites[i].x)
-                console.log(this.sprites[i].y)
+                //console.log(this.sprites[i].x)
+                //console.log(this.sprites[i].y)
                 this.sprites[i].anchor.set(0.5);
                 app.stage.addChild(this.sprites[i])
             }
 
         }
         
-        
-        
-
-        
-        
     }
 
     this.placeOnGameBoard = function() {
-        console.log(app.numDeer)
+        //this.killme();
+        //console.log(app.numDeer)
         if (this.animalName == 'deer') {
+
+            if (this.babyDeerSlot != -1 && app.slotTaken[this.babyDeerSlot] == true) {
+                this.babyDeerSlot = -1;
+            }
+
+            if (this.babyDeerSlot == -1) {
+                if (app.slotTaken[1] == false) {
+                    this.babyDeerSlot = 1;
+                } else if (app.slotTaken[2] == false) {
+                    this.babyDeerSlot = 2;
+                } else if (app.slotTaken[3] == false) {
+                    this.babyDeerSlot = 3;
+                }
+            }
+            console.log("Tossing it in deerslot: " + this.babyDeerSlot)
+
+            
+            
             app.numDeer += 1;
-            if (app.numDeer ==1 ) {
+            if (this.babyDeerSlot == 1) {
+                this.deerSlot = 1;
                 this.sprite.x = 367 +24
                 this.sprite.y = 289 +8
                 this.headUpTimer = 100;
                 this.headDownTimer = 100;
-            } else if (app.numDeer ==2) {
+            } else if (this.babyDeerSlot == 2) {
+                this.deerSlot = 2;
                 this.sprite.x = 461 
                 this.sprite.y = 240
                 this.sprite.scale.x = -1;
@@ -392,6 +457,7 @@ graphics.AnimalObj = function() {
                 this.headDownTimer = 50;
                 this.frame = 30;
             } else {
+                this.deerSlot = 3;
                 this.sprite.x = 229 
                 this.sprite.y = 314
                 this.sprite.scale.x = -1
@@ -399,7 +465,12 @@ graphics.AnimalObj = function() {
                 this.headDownTimer = 75;
                 this.frame = 89;
             }
+            app.slotTaken[this.deerSlot] = true;
             this.changeTimer = this.headDownTimer;
+            if (this.trueAnimalName == 'youngDeer') {
+                this.sprite.scale.x *= 0.75;
+                this.sprite.scale.y *= 0.75
+            }
         }
         if (this.animalName == 'salmon') {
             this.sprite.scale.x = -1
@@ -427,7 +498,7 @@ graphics.AnimalObj = function() {
     }
 
     this.loadTexture = function(img) {
-        console.log(img)
+        //console.log(img)
         return PIXI.loader.resources[img].texture;
     }
 
