@@ -45,6 +45,7 @@ PIXI.loader
 .add("pics/animals/squid1.png")
 .add("pics/animals/squid2.png")
 .add("pics/skull.png")
+.add("pics/star.png")
 .load(function () {
     app.setup();
 });
@@ -56,20 +57,23 @@ app.setup = function () {
     let log = new graphics.Log();
     log.init();
 
+    let world = new graphics.World();
+    world.init();
     let gameBoard = new GameBoard();
-    gameBoard.init();
+    gameBoard.init(world);
+    let star = new graphics.StarObj();
+    star.init(350, 35);
     let deckObj = new graphics.Deck();
     deckObj.init();
     let deck = new Deck()
-    deck.init(gameBoard, 30, "Number of cards: ", 475, 12);
+    deck.init(gameBoard, 18, "Number of cards: ", 475, 12);
     let saveDeck = new Deck()
     saveDeck.init(gameBoard, 0, "Saved cards: ", 475, 150);
     let hand = new Hand();
     let submitButton = new graphics.SubmitObj();
     hand.init(gameBoard, deck, saveDeck, submitButton);
     submitButton.init(hand);
-    let world = new graphics.World();
-    world.init();
+    
     
     let cardBackgrounds = [];
     for (let i = 0; i < 3; i++) {

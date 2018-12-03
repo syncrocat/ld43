@@ -94,6 +94,13 @@ Deck = function() {
 
     this.shuffle = function() {
         // Shuffle
+        let j, x, i;
+        for (i = this.cards.length - 1; i > 0; i--) {
+            j = Math.floor(Math.random() * (i + 1));
+            x = this.cards[i];
+            this.cards[i] = this.cards[j];
+            this.cards[j] = x;
+        }
     }
 
     this.drawCard = function () {
@@ -132,6 +139,7 @@ Hand = function() {
     this.submitButton;
     this.selectedCardPos;
     this.gameBoard;
+    this.bonusRound;
 
     this.init = function(gameBoard, deck, saveDeck, submitButton) {
         this.gameBoard = gameBoard;
@@ -140,11 +148,15 @@ Hand = function() {
         this.saveDeck = saveDeck;
         this.submitButton = submitButton;
         this.selectedCardPos = -1;
+        this.bonusRound = false;
     }
 
     this.submit = function() {
         this.cards[0].card.useAction();
-        this.saveDeck.addCard(this.cards[1].card);
+        if (!this.bonusRound) {
+            this.saveDeck.addCard(this.cards[1].card);
+        }
+
         this.cards[2].card.discardAction();
 
         // Save card
@@ -152,7 +164,7 @@ Hand = function() {
         this.cards[1].cardState = 'save'
         this.cards[2].cardState = 'discard'
 
-        this.drawTimer = 50;
+        this.drawTimer = 10;
         this.selectedCardPos = -1;
         this.isWaitingToDraw; // ?????
         this.gameBoard.countdown()
@@ -202,9 +214,27 @@ Hand = function() {
             this.drawTimer -= 1;
         } else if (this.drawTimer === 0) {
             this.clearCards();
+            console.log("Here we are:", this.deck.getDeckSize(), this.bonusRound);
+            
+            if (this.deck.getDeckSize() === 0) {
+                if (!this.bonusRound) {
+                    let temp = this.deck;
+                    this.deck = this.saveDeck;
+                    this.deck.shuffle(); // TODO make this do something
+                    this.bonusRound = true;
+                    this.saveDeck = temp;
+                    this.saveDeck.updateCardText();
+                    this.deck.updateCardText();
+                } else {
+                    console.log("Game is over!!!!");
+                }
+            }
+
             this.drawCards();
             this.submitButton.enabled = true;
             this.drawTimer = -1
+
+            
         }
     }
 
@@ -213,6 +243,4 @@ Hand = function() {
         this.cards[1] = -1;
         this.cards[2] = -1;
     }
-
-
 }

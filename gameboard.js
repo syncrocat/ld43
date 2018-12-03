@@ -75,6 +75,7 @@ effects.anaconda = function(gameBoard) {
 }
 
 effects.flood = function(gameBoard) {
+    console.log("Hi");
     if (gameBoard.terrainState == 'treeswampwater') {
         gameBoard.terrainState = 'treewaterwater'
         gameBoard.removeAnimal('bat', -2)
@@ -88,7 +89,7 @@ effects.flood = function(gameBoard) {
     } else if (gameBoard.terrainState == 'treetreeoil') {
         gameBoard.terrainState = 'treeswampoil'
     }
-    // gameBoardGraphicObj.updateTerrain()
+    gameBoard.updateTerrain();
 }
 
 effects.drought = function(gameBoard) {
@@ -131,8 +132,22 @@ GameBoard = function () {
     this.terrainState;
     this.animalValues;
     this.logTextObj;
+    this.starsTextObj;
+    this.world;
+    this.worldTextures;
 
-    this.init = function() {
+
+    this.init = function(world) {
+        console.log("FRESH");
+        this.world = world;
+        this.worldTextures = {
+            "treeswampwater": PIXI.loader.resources["pics/treeswampwater.png"].texture,
+            "treetreewater": PIXI.loader.resources["pics/treetreewater.png"].texture,
+            "treewaterwater": PIXI.loader.resources["pics/treewaterwater.png"].texture,
+            "treeswampoil": PIXI.loader.resources["pics/treeswampoil.png"].texture,
+            "treetreeoil": PIXI.loader.resources["pics/treetreeoil.png"].texture,
+            "treeoiloil": PIXI.loader.resources["pics/treeoiloil.png"].texture,
+        };
         this.stars = 0;
         this.animals = {};
         this.effectTimers = [];
@@ -141,6 +156,8 @@ GameBoard = function () {
         this.logTextObj = new graphics.TextObj();
         this.logTextObj.init("", {fontSize: 12, align:"left"}, 25, 25);
         this.animalObjects = [];
+        this.starsTextObj = new graphics.TextObj();
+        this.starsTextObj.init("0", {}, 400, 50);
 
         this.animalValues = {
             'youngDeer' : 0,
@@ -151,6 +168,13 @@ GameBoard = function () {
             'frog' : 2,
             'bat' : 2
         }
+    }
+
+    this.updateTerrain = function() {
+        console.log(this.terrainState);
+        console.log(this.worldTextures);
+        console.log(this.worldTextures[this.terrainState]);
+        this.world.sprite.texture = this.worldTextures[this.terrainState];
     }
 
     this.pluralizeAnimal = function(animal) {
@@ -292,6 +316,7 @@ GameBoard = function () {
         for (let animal in this.animals) {
             let numStars = this.animalValues[animal] * this.animals[animal]
             this.stars += numStars;
+            this.starsTextObj.text.text = this.stars;
             this.log("You gained " + numStars + " stars from your " + this.pluralizeAnimal(animal) + "!");
         }
     }

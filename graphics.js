@@ -621,3 +621,14 @@ graphics.TextObj = function() {
         app.stage.addChild(this.text);
     }
 };
+
+graphics.StarObj = function() {
+    this.sprite;
+
+    this.init = function(x, y) {
+        this.sprite = new PIXI.Sprite(PIXI.loader.resources["pics/star.png"].texture);
+        this.sprite.x = x;
+        this.sprite.y = y;
+        app.stage.addChild(this.sprite);
+    }
+}
