@@ -107,7 +107,7 @@ effects.drought = function(gameBoard) {
     } else if (gameBoard.terrainState == 'treewateroil') {
         gameBoard.terrainState = 'treeswampoil'
     }
-    // gameBoardGraphicObj.updateTerrain()
+    gameBoard.updateTerrain()
 }
 
 effects.oil = function(gameBoard) {
@@ -115,6 +115,8 @@ effects.oil = function(gameBoard) {
     gameBoard.terrainState = gameBoard.terrainState.replace('water', 'oil')
     gameBoard.removeAnimal('salmon', -2);
     gameBoard.removeAnimal('squid', -2)
+
+    gameBoard.updateTerrain();
 }
 
 effects.mosquitoDeath = function(gameBoard) {

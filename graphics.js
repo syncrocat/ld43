@@ -160,8 +160,8 @@ graphics.CardObj = function() {
     }
 
     this.refreshPosition = function() {
-        this.sprite.x = 30 + (this.position * (30 + this.sprite.width));
-        this.sprite.y = 720 - 50 - this.sprite.height;
+        this.sprite.x = 30 + (this.position * 245);
+        this.sprite.y = 495;
     }
 
 }
