@@ -235,8 +235,8 @@ Hand = function() {
         this.cards[n].refreshPosition();
         this.cards[m].refreshPosition();
 
-        this.cards[n].sprite.texture = this.cards[n].hoverTexture;
-        this.cards[m].sprite.texture = this.cards[m].regTexture;
+        this.cards[n].borderSprite.texture = this.cards[n].hoverTexture;
+        this.cards[m].borderSprite.texture = this.cards[m].transpText;
     }
 
     this.drawCards = function() {

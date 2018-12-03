@@ -10,11 +10,14 @@ graphics.CardObj = function() {
     this.hoverTexture;
     this.selectedTexture;
     this.isHovered;
+    this.transpText;
+    this.borderSprite;
 
     this.init = function(card, pos, hand) {
         this.regTexture = this.getRegTexture(card);
-        this.hoverTexture = this.getHoverTexture(card, 'pics/tempcardhovered.png');
-        this.selectedTexture = this.getSelectedTexture(card, 'pics/tempcardselected.png');
+        this.hoverTexture = this.getHoverTexture(card, 'pics/cards/blackborder.png');
+        this.selectedTexture = this.getSelectedTexture(card, 'pics/cards/yellowborder.png');
+        this.transpText = PIXI.loader.resources["pics/cards/transparent.png"].texture;
         this.sprite = this.getSprite(card);
         this.animateFrame = 0;
         this.interactable = false;
@@ -28,7 +31,14 @@ graphics.CardObj = function() {
         this.destroyCounter = 0;
         this.isHovered = false;
         this.hand = hand;
+        this.borderSprite = new PIXI.Sprite(this.transpText);
+        this.borderSprite.width = 175;
+        this.borderSprite.height = 175;
+        this.borderSprite.x = -500;
+        this.borderSprite.y = -500;
+        
         app.stage.addChild(this.sprite);
+        app.stage.addChild(this.borderSprite);
     }
 
     this.getRegTexture = function(card) {
@@ -37,11 +47,11 @@ graphics.CardObj = function() {
     }
 
     this.getHoverTexture = function(card) {
-        return PIXI.loader.resources["pics/tempcardhovered.png"].texture;
+        return PIXI.loader.resources["pics/cards/blackborder.png"].texture;
     }
 
     this.getSelectedTexture = function(card) {
-        return PIXI.loader.resources["pics/tempcardselected.png"].texture;
+        return PIXI.loader.resources["pics/cards/yellowborder.png"].texture;
     }
 
     this.getSprite = function(card) {
@@ -109,16 +119,16 @@ graphics.CardObj = function() {
                 break;
             case 'hand' :
                 if (this.hand.selectedCardPos === this.position) {
-                    if (this.sprite.texture !== this.selectedTexture) {
-                        this.sprite.texture = this.selectedTexture;
+                    if (this.borderSprite.texture !== this.selectedTexture) {
+                        this.borderSprite.texture = this.selectedTexture;
                     }
                 } else if (this.isHovered) {
-                    if (this.sprite.texture !== this.hoverTexture) {
-                        this.sprite.texture = this.hoverTexture;
+                    if (this.borderSprite.texture !== this.hoverTexture) {
+                        this.borderSprite.texture = this.hoverTexture;
                     }
                 } else {
-                    if (this.sprite.texture !== this.regTexture) {
-                        this.sprite.texture = this.regTexture;
+                    if (this.borderSprite.texture !== this.transpText) {
+                        this.borderSprite.texture = this.transpText;
                     }
                 }
                 break;
@@ -156,6 +166,8 @@ graphics.CardObj = function() {
     this.refreshPosition = function() {
         this.sprite.x = 30 + (this.position * 245);
         this.sprite.y = 495;
+        this.borderSprite.x = this.sprite.x;
+        this.borderSprite.y = this.sprite.y;
     }
 
 }
