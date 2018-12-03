@@ -238,6 +238,7 @@ Hand = function() {
     }
 
     this.runCards = function(mouseX,mouseY) {
+        hintmeIRL = false;
         this.cards.filter(card => card != -1).forEach(card => card.runObject(mouseX,mouseY));
 
         if (this.drawTimer > 0) {
@@ -257,11 +258,17 @@ Hand = function() {
                     this.deck.updateCardText();
                 } else {
                     console.log("Game is over!!!!");
-                    let endGameScreen = PIXI.Sprite(PIXI.loader.resources["pics/background.png"].texture);
+                    let endGameScreen = new PIXI.Sprite(PIXI.loader.resources["pics/background.png"].texture);
                     endGameScreen.x = 0;
                     endGameScreen.y = 0;
                     console.log(endGameScreen);
                     app.stage.addChild(endGameScreen);
+
+                    let scoreText = new graphics.TextObj();
+                    scoreText.init("Score: " + this.gameBoard.stars, {fontSize: 30}, 300, 300);
+                    //app.renderer.render(app.stage);
+                    hintmeIRL = true;
+                    return 'end me sempai'
                 }
             }
 

@@ -123,28 +123,39 @@ app.setup = function () {
 }
 
 app.deadObjects = [];
+app.endMePermanentlySempai = false;
 
 app.gameLoop = function (gameBox) {
     // Comment
     requestAnimationFrame(() => app.gameLoop(gameBox));
 
-    // Get mouse data
-    var mouseposition = app.renderer.plugins.interaction.mouse.global;
+    if (app.endMePermanentlySempai) {
+
+    } else {
+        var mouseposition = app.renderer.plugins.interaction.mouse.global;
     let mouseX = Math.round(mouseposition.x)
     let mouseY = Math.round(mouseposition.y)
     if (app.mouse_pressed) console.log(mouseX,mouseY)
     
     // 
-    gameBox.hand.runCards(mouseX,mouseY);
-    gameBox.submit.runObject(mouseX,mouseY);
-    gameBox.gameBoard.runObjects();
-    //gameBox.bugs.runObject()
-    //gameBox.test.runObject();
-    for (let i = 0; i < app.deadObjects.length; i++) {
-        deadObjects[i].runObject();
+    if (gameBox.hand.runCards(mouseX,mouseY) !== 'end me sempai') {
+        gameBox.submit.runObject(mouseX,mouseY);
+        gameBox.gameBoard.runObjects();
+        //gameBox.bugs.runObject()
+        //gameBox.test.runObject();
+        for (let i = 0; i < app.deadObjects.length; i++) {
+            deadObjects[i].runObject();
+        }
+
+        app.mouse_held = app.mouse_pressed;
+    } else {
+        app.endMePermanentlySempai = true;
+    }
     }
 
-    app.mouse_held = app.mouse_pressed;
+    // Get mouse data
+    
+    
 
     
 
