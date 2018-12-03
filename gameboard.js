@@ -86,11 +86,11 @@ effects.flood = function(gameBoard) {
     if (gameBoard.terrainState == 'treeswampwater') {
         gameBoard.terrainState = 'treewaterwater'
         gameBoard.removeAnimal('bat', -2)
-        gameBoard.removeAnimal('frog', -2)
+        //gameBoard.removeAnimal('frog', -2)
     } else if (gameBoard.terrainState == 'treeswampoil') {
         gameBoard.terrainState = 'treeoiloil'
         gameBoard.removeAnimal('bat', -2)
-        gameBoard.removeAnimal('frog', -2)
+        //gameBoard.removeAnimal('frog', -2)
     } else if (gameBoard.terrainState == 'treetreewater') {
         gameBoard.terrainState = 'treeswampwater'
     } else if (gameBoard.terrainState == 'treetreeoil') {
@@ -103,11 +103,11 @@ effects.drought = function(gameBoard) {
     gameBoard.log("A drought dried up the swamp!")
     if (gameBoard.terrainState == 'treeswampwater') {
         gameBoard.terrainState = 'treetreewater'
-        gameBoard.removeAnimal('bat', -2)
+        //gameBoard.removeAnimal('bat', -2)
         gameBoard.removeAnimal('frog', -2)
     } else if (gameBoard.terrainState == 'treeswampoil') {
         gameBoard.terrainState = 'treetreeoil'
-        gameBoard.removeAnimal('bat', -2)
+        //gameBoard.removeAnimal('bat', -2)
         gameBoard.removeAnimal('frog', -2)
     } else if (gameBoard.terrainState == 'treewaterwater') {
         gameBoard.terrainState = 'treeswampwater'
@@ -120,8 +120,8 @@ effects.drought = function(gameBoard) {
 effects.oil = function(gameBoard) {
     gameBoard.log ("An oil spill occured!")
     gameBoard.terrainState = gameBoard.terrainState.replace('water', 'oil')
-    gameBoard.removeAnimal('salmon', -2);
-    gameBoard.removeAnimal('squid', -2)
+    gameBoard.removeSpecies('salmon');
+    gameBoard.removeSpecies('squid')
 
     gameBoard.updateTerrain();
 }
