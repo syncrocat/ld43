@@ -8,28 +8,30 @@ EffectTimer = function(duration, effect, name, additionalParams=null) {
 
 var effects = {};
 effects.munchDeer = function(gameBoard) {
-    console.log("MUNCH EVENT")
-    if (gameBoard.containsAnimal("deer")) {
-        console.log("One adult dear eaten. Expect adult removed.")
+    if (gameBoard.containsAnimal('wolf')) {
+        //console.log("MUNCH EVENT")
+        if (gameBoard.containsAnimal("deer")) {
+            console.log("One adult dear eaten. Expect adult removed.")
 
-        gameBoard.removeAnimal("deer");
-        gameBoard.addEffectTimer(new EffectTimer(2, effects.munchDeer, "munchDeer"));
-        gameBoard.log("Wolf ate deer v nice +2 to big starve");
-        
-        return;
+            gameBoard.removeAnimal("deer");
+            gameBoard.addEffectTimer(new EffectTimer(2, effects.munchDeer, "munchDeer"));
+            gameBoard.log("Wolf ate deer v nice +2 to big starve");
+            
+            return;
+        }
+
+        if (gameBoard.containsAnimal("youngDeer")) {
+            console.log("One baby dear eaten. Expect adult removed.")
+            gameBoard.removeAnimal("youngDeer");
+            // halftime
+            gameBoard.addEffectTimer(new EffectTimer(1, effects.munchDeer, "munchDeer"));
+            gameBoard.log("Wolf had baby deer yikes +1 big starve instead of 2");
+            return;
+        }
+
+        gameBoard.log("rip inu ;(");
+        gameBoard.removeSpecies("wolf");
     }
-
-    if (gameBoard.containsAnimal("youngDeer")) {
-        console.log("One baby dear eaten. Expect adult removed.")
-        gameBoard.removeAnimal("youngDeer");
-        // halftime
-        gameBoard.addEffectTimer(new EffectTimer(1, effects.munchDeer, "munchDeer"));
-        gameBoard.log("Wolf had baby deer yikes +1 big starve instead of 2");
-        return;
-    }
-
-    gameBoard.log("rip inu ;(");
-    gameBoard.removeSpecies("wolf");
 }
 
 effects.matureDeer = function(gameBoard) {
@@ -111,10 +113,18 @@ effects.drought = function(gameBoard) {
         gameBoard.removeAnimal('frog', -2)
     } else if (gameBoard.terrainState == 'treewaterwater') {
         gameBoard.terrainState = 'treeswampwater'
-    } else if (gameBoard.terrainState == 'treewateroil') {
+    } else if (gameBoard.terrainState == 'treeoiloil') {
         gameBoard.terrainState = 'treeswampoil'
     }
     gameBoard.updateTerrain()
+}
+
+effects.salmonDouble = function(gameBoard) {
+    if (gameBoard.containsAnimal('salmon')) {
+        gameBoard.log ("Your salmon doubled in value!")
+        gameBoard.animalValues['salmon'] *= 2
+        gameBoard.addEffectTimer(new EffectTimer(3, effects.salmonDouble, "salmonDouble"))
+    }   
 }
 
 effects.oil = function(gameBoard) {
@@ -129,8 +139,8 @@ effects.oil = function(gameBoard) {
 effects.bugDeath = function(gameBoard, n) {
     if (n == 0) {
         gameBoard.log('The bugs have left the swamp.')
-        gameBoard.animalValues['frog'] -= 1
-        gameBoard.animalValues['bat'] -= 1
+        gameBoard.animalValues['frog'] /= 2
+        gameBoard.animalValues['bat'] /= 2
         app.stage.removeChild(gameBoard.bugman.sprite)
         gameBoard.bugman = -1;
     } else {
@@ -239,7 +249,7 @@ GameBoard = function () {
     }
 
     this.containsAnimal = function(animalName) {
-        return animalName in this.animals;
+        return animalName in this.animals && this.animals[animalName] != 0;
     }
 
     this.log = function(message) {
@@ -290,7 +300,7 @@ GameBoard = function () {
             }
             
             let index = -1;
-            //console.log(this.animalObjects)
+
             for (let i = 0; i < this.animalObjects.length; i++) {
                 if (this.animalObjects[i].trueAnimalName == animalName) {
                     index = i;
@@ -300,11 +310,9 @@ GameBoard = function () {
             let toKill = this.animalObjects.filter(obj => obj.trueAnimalName === animalName);
             //console.log(toKill)
             if (toKill.length > 0)
-            babyDeerSlot = toKill[0].killme();
-            this.animalObjects = this.animalObjects.splice(index, 1)
-            if (babyDeerSlot !== false) {
-                return babyDeerSlot
-            }
+            toKill[0].killme();
+            this.animalObjects.splice(index, 1)
+
             return -1;
         }
 

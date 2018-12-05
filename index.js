@@ -127,6 +127,7 @@ app.setup = function () {
 
 app.deadObjects = [];
 app.endMePermanentlySempai = false;
+app.mouse_held_button =false
 
 app.gameLoop = function (gameBox) {
     // Comment
@@ -160,7 +161,11 @@ app.gameLoop = function (gameBox) {
     
     
 
-    
+    if (app.mouse_pressed == false) {
+        app.mouse_held_button =false;
+    } else {
+        app.mouse_held_button = true;
+    }
 
     // Render my game palsy
     app.renderer.render(app.stage);

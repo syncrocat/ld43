@@ -200,14 +200,18 @@ graphics.SubmitObj = function() {
     this.runObject = function(mouseX,mouseY) {
         if (this.enabled && this.isMousedOver(mouseX,mouseY)) {
             this.onHover();
-            if (app.mouse_pressed) {
+            if (app.mouse_pressed && !app.mouse_held_button) {
                 this.enabled = false;
                 this.hand.submit();
+                app.mouse_held_2 = true;
             }
+            
         }
     }
 
 }
+
+app.mouse_held_2 = false;
 
 graphics.Deck = function() {
     this.sprite;
@@ -338,20 +342,12 @@ graphics.AnimalObj = function() {
     this.killme = function() {
 
         if (this.animalName == 'salmon') {
-            for (let i = 0; i < this.fishNum; i++) {
+            for (let i = 0; i < this.numFish; i++) {
                 app.stage.removeChild(this.sprites[i]);
             }
         } else {
             //console.log('sos')
             app.stage.removeChild(this.sprite);
-            if (this.animalName == 'deer') {
-                app.slotTaken[this.deerSlot] = false;
-                console.log("Destroying animal at deerslot: " + this.deerSlot)
-                if (this.trueAnimalName == 'youngDeer')  {
-                    console.log("And its a babydeer so passing it back boys")
-                    return this.deerSlot
-                }
-            }
         }
         return true;
 
@@ -430,31 +426,14 @@ graphics.AnimalObj = function() {
         //console.log(app.numDeer)
         if (this.animalName == 'deer') {
 
-            if (this.babyDeerSlot != -1 && app.slotTaken[this.babyDeerSlot] == true) {
-                this.babyDeerSlot = -1;
-            }
-
-            if (this.babyDeerSlot == -1) {
-                if (app.slotTaken[1] == false) {
-                    this.babyDeerSlot = 1;
-                } else if (app.slotTaken[2] == false) {
-                    this.babyDeerSlot = 2;
-                } else if (app.slotTaken[3] == false) {
-                    this.babyDeerSlot = 3;
-                }
-            }
-            console.log("Tossing it in deerslot: " + this.babyDeerSlot)
-
-            
-            
             app.numDeer += 1;
-            if (this.babyDeerSlot == 1) {
+            if (app.numDeer == 1) {
                 this.deerSlot = 1;
                 this.sprite.x = 367 +24
                 this.sprite.y = 289 +8 - 20
                 this.headUpTimer = 100;
                 this.headDownTimer = 100;
-            } else if (this.babyDeerSlot == 2) {
+            } else if (app.numDeer == 2) {
                 this.deerSlot = 2;
                 this.sprite.x = 461 
                 this.sprite.y = 240- 20
@@ -471,7 +450,7 @@ graphics.AnimalObj = function() {
                 this.headDownTimer = 75;
                 this.frame = 89;
             }
-            app.slotTaken[this.deerSlot] = true;
+
             this.changeTimer = this.headDownTimer;
             if (this.trueAnimalName == 'youngDeer') {
                 this.sprite.scale.x *= 0.75;

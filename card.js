@@ -26,6 +26,7 @@ Card = function() {
                     this.gameBoard.deadAnimalNum += 1
                 } else {
                     this.gameBoard.addAnimal("salmon")
+                    this.gameBoard.addEffectTimer(new EffectTimer(3, effects.salmonDouble, "salmonDouble"))
                 }
                 break;
             case "squid":
@@ -58,8 +59,8 @@ Card = function() {
             case "bug":
                 this.gameBoard.bugman = new graphics.BugObj();
                 this.gameBoard.log("Bugs nourish the creatures of the swamp!")
-                this.gameBoard.animalValues['frog'] += 1
-                this.gameBoard.animalValues['bat'] += 1
+                this.gameBoard.animalValues['frog'] *= 2
+                this.gameBoard.animalValues['bat'] *= 2
                 this.gameBoard.addEffectTimer(new EffectTimer(1, effects.bugDeath, "bugDeath", 3))
                 break;
             case "flood":
