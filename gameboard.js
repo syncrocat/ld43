@@ -124,6 +124,7 @@ effects.salmonDouble = function(gameBoard) {
         gameBoard.log ("Your salmon doubled in value!")
         gameBoard.animalValues['salmon'] *= 2
         gameBoard.addEffectTimer(new EffectTimer(3, effects.salmonDouble, "salmonDouble"))
+        gameBoard.doubleSalmon();
     }   
 }
 
@@ -189,6 +190,10 @@ GameBoard = function () {
     this.deadAnimalNum = 0;
     this.bugman = -1;
 
+    this.doubleSalmon = function() {
+        let mySalmon = this.animalObjects.filter(a => a.animalName == 'salmon')
+        mySalmon.doubleMySalmon();
+    }
 
     this.init = function(world) {
         console.log("FRESH");

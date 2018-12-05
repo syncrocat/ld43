@@ -421,6 +421,30 @@ graphics.AnimalObj = function() {
         
     }
 
+    this.doubleMySalmon = function() {
+        for (let i = 0; i<this.numFish;i++) {
+            this.animationStates.push(1);
+            let fishyman = Math.floor(Math.random() * 3)
+            this.sprites[i+this.numFish] = new PIXI.Sprite(this.textures[fishyman])
+            let bigMOOD = Math.floor(Math.random() * 50)
+            this.sprites[i+this.numFish].x = 520 - bigMOOD
+            this.sprites[i+this.numFish].y = 337 - bigMOOD * (6/11)
+            let randMoved = Math.floor(Math.random() * 200 - 40)
+            this.sprites[i+this.numFish].x -= randMoved;
+            this.sprites[i+this.numFish].y += randMoved*(6/11);
+            this.sprites[i+this.numFish].scale.x *= -1
+            this.sprites[i+this.numFish].scale.y *= -1
+            this.xPointLeft[i+this.numFish] = 345 - bigMOOD
+            this.xPointRight[i+this.numFish] = 590 - bigMOOD * (6/11)
+            this.speeds[i+this.numFish] = 0.3 + Math.random() * 0.4 - 0.2
+            //console.log(this.sprites[i].x)
+            //console.log(this.sprites[i].y)
+            this.sprites[i+this.numFish].anchor.set(0.5);
+            app.stage.addChild(this.sprites[i+this.numFish])
+        }
+        this.numFish *= 2;
+    }
+
     this.placeOnGameBoard = function() {
         //this.killme();
         //console.log(app.numDeer)
@@ -581,8 +605,6 @@ graphics.AnimalObj = function() {
             }
             
         }
-        
-        
     }
 
     this.runObject = function() {

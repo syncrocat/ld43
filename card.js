@@ -194,8 +194,9 @@ Hand = function() {
     this.selectedCardPos;
     this.gameBoard;
     this.bonusRound;
+    this.saveText;
 
-    this.init = function(gameBoard, deck, saveDeck, submitButton) {
+    this.init = function(gameBoard, deck, saveDeck, submitButton, saveText) {
         this.gameBoard = gameBoard;
         this.cards = [-1, -1, -1]
         this.deck = deck;
@@ -203,6 +204,7 @@ Hand = function() {
         this.submitButton = submitButton;
         this.selectedCardPos = -1;
         this.bonusRound = false;
+        this.saveText = saveText;
     }
 
     this.submit = function() {
@@ -273,6 +275,16 @@ Hand = function() {
             
             if (this.deck.getDeckSize() === 0) {
                 if (!this.bonusRound) {
+                    // Visually alert them they're saved
+                    app.stage.removeChild(this.saveText)
+                    newDiscardText = new graphics.TextObj();
+                    let style = {align: "left"};
+                    newDiscardText.init("DISCARD", style, 15 + 202 + 42 + 101 - 55, 680);
+                    app.stage.addChild(newDiscardText)
+                    savedRoundText = new graphics.TextObj();
+                    savedRoundText.init("☆~SAVE CARDS ROUND~☆", style, 200, 200) //Fix this positioning
+
+                    //Be saved
                     let temp = this.deck;
                     this.deck = this.saveDeck;
                     this.deck.shuffle(); // TODO make this do something

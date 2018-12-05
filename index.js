@@ -90,8 +90,7 @@ app.setup = function () {
     saveDeck.init(gameBoard, 0, "Saved cards: ", 475, 150);
     let hand = new Hand();
     let submitButton = new graphics.SubmitObj();
-    hand.init(gameBoard, deck, saveDeck, submitButton);
-    submitButton.init(hand);
+
     //let killme = new graphics.BugObj();
     
     let cardBackgrounds = [];
@@ -107,6 +106,9 @@ app.setup = function () {
     cardLabels[0].init("ACTIVATE", style, 15 + 101 - 60, 680);
     cardLabels[1].init("SAVE", style, 15 + 202 + 42 + 101 - 40, 680);
     cardLabels[2].init("DISCARD", style, 15 + 202 + 42 + 202 + 42 + 101 - 55, 680);
+
+    hand.init(gameBoard, deck, saveDeck, submitButton, cardLabels[1]);
+    submitButton.init(hand);
 
     let helpButton = new graphics.HelpButtonObj();
     helpButton.init();
