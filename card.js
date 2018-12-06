@@ -184,6 +184,8 @@ Deck = function() {
     }
 }
 
+app.once = true;
+
 Hand = function() {
     this.cards;
     this.deck;
@@ -195,6 +197,7 @@ Hand = function() {
     this.gameBoard;
     this.bonusRound;
     this.saveText;
+    this.newDiscardText;
 
     this.init = function(gameBoard, deck, saveDeck, submitButton, saveText) {
         this.gameBoard = gameBoard;
@@ -275,14 +278,18 @@ Hand = function() {
             
             if (this.deck.getDeckSize() === 0) {
                 if (!this.bonusRound) {
-                    // Visually alert them they're saved
-                    app.stage.removeChild(this.saveText)
-                    newDiscardText = new graphics.TextObj();
-                    let style = {align: "left"};
-                    newDiscardText.init("DISCARD", style, 15 + 202 + 42 + 101 - 55, 680);
-                    app.stage.addChild(newDiscardText)
-                    savedRoundText = new graphics.TextObj();
-                    savedRoundText.init("☆~SAVE CARDS ROUND~☆", style, 200, 200) //Fix this positioning
+                    if (app.once) {
+                        // Visually alert them they're saved
+                        //app.stage.removeChild(this.saveText)
+                        app.stage.removeChild(app.stage.children.filter(a => a._text == 'SAVE')[0])
+                        this.newDiscardText = new graphics.TextObj();
+                        let style = {align: "left"};
+                        this.newDiscardText.init("DISCARD", style, 15 + 202 + 42 + 101 - 55, 680);
+                       // app.stage.addChild(this.newDiscardText)
+                        savedRoundText = new graphics.TextObj();
+                       // savedRoundText.init("☆~SAVED CARDS ROUND~☆", style, 200, 200) //Fix this positioning
+                        app.once = false;
+                    }
 
                     //Be saved
                     let temp = this.deck;

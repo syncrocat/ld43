@@ -192,7 +192,7 @@ GameBoard = function () {
 
     this.doubleSalmon = function() {
         let mySalmon = this.animalObjects.filter(a => a.animalName == 'salmon')
-        mySalmon.doubleMySalmon();
+        mySalmon[0].doubleMySalmon();
     }
 
     this.init = function(world) {
